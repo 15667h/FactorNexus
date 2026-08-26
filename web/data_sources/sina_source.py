@@ -129,7 +129,13 @@ class SinaSource(DataSource):
     @staticmethod
     def _parse_a_share_row(row: dict) -> Bar:
         day = str(row.get("day", ""))
-        ts = int(datetime.strptime(day, "%Y-%m-%d").replace(tzinfo=_CST).timestamp())
+        # 日线 "2026-08-26" 或分钟线 "2026-08-26 10:00:00"（带时间）
+        if " " in day:
+            ts = int(datetime.strptime(day, "%Y-%m-%d %H:%M:%S")
+                     .replace(tzinfo=_CST).timestamp())
+        else:
+            ts = int(datetime.strptime(day, "%Y-%m-%d")
+                     .replace(tzinfo=_CST).timestamp())
         return Bar(ts=ts,
                    open=float(row["open"]), high=float(row["high"]),
                    low=float(row["low"]), close=float(row["close"]),

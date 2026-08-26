@@ -1,6 +1,21 @@
 symbol,status,n_gp,n_llm,n_rl,n_accepted,best_dsr,best_ic,best_engine,best_formula,elapsed_s
-sh600000,ok,3,3,1,0,0.0,0.0,gp,amt_per_trade的Last（120期·切片0.9，按boll_pos掩码low_0.3）,94.4
-sh600004,ok,6,3,1,0,0.0,0.0,gp,amt_per_trade的Last（120期·切片0.8，按macd_hist掩码high_0.7）,95.0
-sh600007,ok,9,3,1,0,0.0,0.0,gp,boll_pos的Mean（120期·切片0.8）,95.2
-sh600006,ok,9,3,1,0,0.0,0.0,gp,ppo的Last（60期·切片0.1，按amt_per_trade掩码high_0.5）,95.4
-sh600008,ok,13,3,1,0,0.0,0.0,gp,ppo的Last（20期·切片0.7，按trend_strength_50掩码low_0.5）,27.7
+sh600004,ok,5,3,1,0,0.0,0.0,gp,low的Last（60期·切片0.3）,78.8
+sh600006,ok,10,3,1,0,0.0,0.0,gp,boll_pos的Slope（60期·切片1.0，按ppo掩码high_0.5）,79.6
+sh600007,ok,7,3,1,0,0.0,0.0,gp,ema_ratio_12_26的Last（60期·切片0.4，按close掩码high_0.7）,81.3
+sh600000,ok,10,3,1,0,0.0,0.0,gp,close的Last（120期·切片0.9，按macd_hist掩码low_0.3）,82.9
+sh600011,ok,11,3,1,0,0.0,0.0,gp,ult_osc的Last（5期·切片0.0）,72.1
+sh600009,ok,10,3,1,0,0.0,0.0,gp,high的Mean（10期·切片0.0）,83.0
+sh600010,ok,9,3,1,0,0.0,0.0,llm,num_trades与macd_hist(滞后-1)的R2（10期·切片0.8）,84.4
+sh600008,ok,9,3,1,0,0.0,0.0,gp,ema_ratio_12_26的Last（20期·切片0.4）,98.7
+sh600012,ok,8,3,1,0,0.0,0.0,gp,trix_15的AC1（120期·切片0.9，按close掩码high_0.5）,63.0
+sh600015,ok,6,3,1,0,0.0,0.0,gp,low的Last（120期·切片0.7）,58.2
+sh600017,ok,9,3,1,0,0.0,0.0,gp,amt_vol_euclid的Momentum（120期·切片0.5，按ema_ratio_12_26掩码high_0.7）,60.5
+sh600016,ok,12,3,1,0,0.0,0.0,gp,low的Last（120期·切片0.1，按vol_regime掩码high_0.5）,72.5
+sh600018,ok,7,3,1,0,0.0,0.0,gp,low的Quantile（120期·切片0.6）,58.0
+sh600019,ok,7,3,1,0,0.0,0.0,gp,mfi14的Range（全区间·切片0.9，按willr_14掩码high_0.7）,63.5
+sh600021,ok,4,3,1,0,0.0,0.0,rl,BOLL_WIDTH -> STOCH_K_14 -> DMI_ADX_14 -> RVOL -> CS_RANK_RET5 -> MOMENTUM_5 -> ,60.3
+sh600020,ok,7,3,1,0,0.0,0.0,gp,boll_pos的Sum（120期·切片0.8，按volume掩码high_0.7）,67.1
+sh600022,ok,8,3,1,0,0.0,0.0,gp,typical_dev的Med（120期·切片0.0）,58.5
+sh600023,ok,6,3,1,0,0.0,0.0,rl,STOCH_K_14 -> TYPICAL_DEV -> MAX3 -> TS_ARG_MIN_5 -> SIGN -> DECAY -> CS_NEUTRAL,52.8
+sh600025,ok,7,3,1,0,0.0,0.0,gp,roc_12的Mean（10期·切片0.8）,45.7
+sh600026,ok,10,3,1,0,0.0,0.0,gp,amt_vol_euclid的Last（60期·切片0.7，按atr掩码high_0.5）,41.5

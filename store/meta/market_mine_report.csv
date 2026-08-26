@@ -1,3 +1,0 @@
-symbol,status,n_factors,best_dsr,best_ic,best_formula,elapsed_s
-sh600036,ok,2,1.0,0.356,obv_slope与boll_pos(滞后4)的Slope2（5期·切片0.0，按high掩码low_0.5）,3.8
-sz000333,ok,1,0.679,0.3464,ppo与amount(滞后0)的Intercept（10期·切片0.1，按ret5掩码high_0.3）,3.9
