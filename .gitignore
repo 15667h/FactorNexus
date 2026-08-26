@@ -1,0 +1,117 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+tmp/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv/
+
+# IDE
+.vscode/
+.cursor/
+.idea/
+*.swp
+*.swo
+*~
+
+# Environment variables / secrets
+.env
+.env.*
+!.env.example
+
+# Testing
+.pytest_cache/
+.hypothesis/
+.coverage
+htmlcov/
+.tox/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# OS
+.DS_Store
+Thumbs.db
+
+# ── MT5 AlphaGPT: 训练产物（体积大、可本地再生）────────────────────
+checkpoints/
+*.pt
+*.pth
+training_history*.json
+best_mt5_strategy.json
+
+# ── 策略输出（本地研究成果，不上传 GitHub）────────────────────────
+strategies/*.json
+strategies/*.txt
+!strategies/README.md
+!strategies/*.md
+
+# ── 回测/验证输出（图表、报告、可再生产物）────────────────────────
+backtest_output/
+backtest_output_*/
+verification_results.json
+
+# ── 实盘/运行态文件 ────────────────────────────────────────────────
+portfolio_state.json
+web_settings.json
+ai_analysis_history.json
+train_elapsed.json
+training_time_*.json
+STOP_SIGNAL
+train.pid
+train_stdout.log
+train_stderr.log
+*.log
+logs/
+
+# ── 本地数据缓存（体积大，机器相关）──────────────────────────────
+data/
+!data_pipeline/
+data/cache/
+**/kline_cache/
+*.parquet
+*.hcc
+*.hc
+
+# ── 临时脚本/分析输出 ──────────────────────────────────────────────
+_tmp_*.py
+backtest_current_forex.py
+_quick_bt.py
+
+# ── 本机配置 / 密钥 / 临时下载（绝不上传）──────────────────────────
+tmp_downloads/
+tmp/
+*.zip
+web_settings*.json
+!web_settings.example.json
+.ai_*/
+secrets/
+*.pem
+*.key
+credentials*.json
+local_settings*.json

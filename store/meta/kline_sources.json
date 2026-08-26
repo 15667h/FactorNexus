@@ -1,0 +1,11 @@
+{
+ "sh600008_1d": {
+  "source": "tencent",
+  "adjust": "qfq",
+  "bars": 6290,
+  "first_ts": 956764800,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787742821
+ }
+}

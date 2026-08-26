@@ -1,0 +1,15 @@
+{
+  "last_data_file": "",
+  "last_strategy_file": "",
+  "debug_mode": false,
+  "ai_provider": "deepseek",
+  "ai_api_key": "",
+  "bt_commission_pct": 0.02,
+  "bt_slippage_pct": 0.01,
+  "realtime_watches": [],
+  "feishu_enabled": false,
+  "feishu_webhook_url": "",
+  "feishu_secret": "",
+  "tqsdk_user": "七斗居士",
+  "tqsdk_password": "ghhkphs8"
+}

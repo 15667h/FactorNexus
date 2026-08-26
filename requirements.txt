@@ -1,0 +1,48 @@
+﻿# FactorNexus - Full Dependencies
+# Python 3.10+ required (recommended: 3.11 / 3.13)
+#
+# Install everything (Chinese Windows tip: use python -m pip):
+#   python -m pip install -r requirements.txt
+# TradingView source also needs git available for the tvdatafeed line below.
+#   python -m pip install "git+https://github.com/rongardF/tvdatafeed.git"
+
+# ===== Deep Learning & Numerical =====
+torch>=2.0.0
+numpy>=1.24.0
+scipy>=1.10.0
+
+# ===== Data Processing =====
+pandas>=2.0.0
+pyarrow>=14.0.0
+
+# ===== Charts / Visualization =====
+matplotlib>=3.7.0
+seaborn>=0.12.0
+
+# ===== Trading Platforms / Market Data =====
+MetaTrader5>=5.0.45
+tushare>=1.2.89
+pytdx>=1.72
+requests>=2.31.0
+# TradingView (tvDatafeed) — install via git if the VCS line fails on your network:
+#   python -m pip install git+https://github.com/rongardF/tvdatafeed.git
+tvdatafeed @ git+https://github.com/rongardF/tvdatafeed.git
+
+# ===== Web UI =====
+fastapi>=0.110.0
+uvicorn[standard]>=0.27.0
+python-multipart>=0.0.9
+pydantic>=2.0.0
+
+# ===== Auth / Crypto helpers (WorkBuddy token decrypt on Windows) =====
+cryptography>=41.0.0
+
+# ===== Environment & Logging =====
+python-dotenv>=1.0.0
+loguru>=0.7.0
+tqdm>=4.66.0
+
+# ===== Tests / E2E tooling =====
+pytest>=7.0.0
+hypothesis>=6.0.0
+playwright>=1.40.0

@@ -1,0 +1,6 @@
+symbol,status,n_gp,n_llm,n_rl,n_accepted,best_dsr,best_ic,best_engine,best_formula,elapsed_s
+sh600000,ok,3,3,1,0,0.0,0.0,gp,amt_per_trade的Last（120期·切片0.9，按boll_pos掩码low_0.3）,94.4
+sh600004,ok,6,3,1,0,0.0,0.0,gp,amt_per_trade的Last（120期·切片0.8，按macd_hist掩码high_0.7）,95.0
+sh600007,ok,9,3,1,0,0.0,0.0,gp,boll_pos的Mean（120期·切片0.8）,95.2
+sh600006,ok,9,3,1,0,0.0,0.0,gp,ppo的Last（60期·切片0.1，按amt_per_trade掩码high_0.5）,95.4
+sh600008,ok,13,3,1,0,0.0,0.0,gp,ppo的Last（20期·切片0.7，按trend_strength_50掩码low_0.5）,27.7
