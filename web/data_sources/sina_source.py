@@ -77,6 +77,7 @@ class SinaSource(DataSource):
 
     def fetch_bars(
         self, symbol: str, timeframe: str, n: int, drop_forming: bool = True,
+        adjust: str = "raw",   # 新浪为不复权数据，接收但忽略（接口统一）
     ) -> list[Bar]:
         norm = normalize_code(symbol)
         if norm.is_futures:

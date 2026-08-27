@@ -1,11 +1,15 @@
-"""数据源工厂 + 单例注册（复用连接）。"""
+"""数据源工厂 + 单例注册（复用连接）。
+
+仅保留 A 股相关数据源（腾讯/新浪/通达信）。
+MT5/OKX/TradingView/国内期货源已于 2026-08-27 删除（与 A 股无关）。
+"""
 from __future__ import annotations
 
 import threading
 
 from web.data_sources.base import DataSource
 
-# 前端下拉可见的数据源（腾讯/新浪/通达信为 A股+期货主力；MT5/TradingView 保留兼容）
+# 前端下拉可见的数据源（A 股三源）
 SOURCE_KINDS: tuple[tuple[str, str], ...] = (
     ("tencent", "腾讯财经"),
     ("sina", "新浪财经"),
@@ -23,21 +27,9 @@ def _build(kind: str) -> DataSource:
     if kind == "sina":
         from web.data_sources.sina_source import SinaSource
         return SinaSource()
-    if kind == "mt5":
-        from web.data_sources.mt5_source import MT5Source
-        return MT5Source()
-    if kind == "tradingview":
-        from web.data_sources.tradingview_source import TradingViewSource
-        return TradingViewSource()
-    if kind == "okx":
-        from web.data_sources.okx_source import OKXSource
-        return OKXSource()
     if kind == "tongdaxin":
         from web.data_sources.tongdaxin_source import TongdaxinSource
         return TongdaxinSource()
-    if kind == "domestic_futures":
-        from web.data_sources.domestic_futures_source import DomesticFuturesSource
-        return DomesticFuturesSource()
     raise ValueError(f"未知数据源: {kind}")
 
 

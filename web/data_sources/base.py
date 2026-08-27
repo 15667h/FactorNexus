@@ -1,4 +1,4 @@
-﻿"""实时行情数据源抽象层。
+"""实时行情数据源抽象层。
 
 统一接口，供 realtime_manager 拉取 K 线并转换为 FactorNexus 特征引擎所需的
 raw_dict（torch 张量 [1, T]，升序=最旧在前）。
@@ -55,11 +55,16 @@ class DataSource(ABC):
 
     @abstractmethod
     def fetch_bars(
-        self, symbol: str, timeframe: str, n: int, drop_forming: bool = True
+        self, symbol: str, timeframe: str, n: int, drop_forming: bool = True,
+        adjust: str = "raw",
     ) -> list[Bar]:
         """拉取最近 n 根已收盘 K 线，升序（最旧在前）。
 
         drop_forming=True 时剔除当前正在形成的 bar，使最后一根为「最后已收盘 bar」。
+        adjust: 复权口径 "qfq"(前复权) / "hfq"(后复权) / "raw"(不复权)。
+                仅支持复权的数据源（腾讯）实现此参数；其余源（新浪/通达信
+                =不复权数据）接收但忽略，保持接口统一（2026-08-27 修复：
+                挖矿机统一传 adjust 时新浪/通达信曾因签名不符抛 TypeError）。
         """
 
     def connect(self) -> None:  # noqa: B027 - 可选

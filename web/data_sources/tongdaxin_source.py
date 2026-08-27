@@ -150,7 +150,8 @@ class TongdaxinSource(DataSource):
         return self._api.get_security_bars(cat, market, code, start, count)
 
     def fetch_bars(
-        self, symbol: str, timeframe: str, n: int, drop_forming: bool = True
+        self, symbol: str, timeframe: str, n: int, drop_forming: bool = True,
+        adjust: str = "raw",   # 通达信为不复权数据，接收但忽略（接口统一）
     ) -> list[Bar]:
         """拉取 K 线（支持全历史翻页：单页上限 800，循环 start 向前翻）。
 

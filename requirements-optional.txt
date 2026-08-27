@@ -1,4 +1,0 @@
-# Deprecated: all packages now live in requirements.txt.
-# Kept so old deploy docs still work:
-#   python -m pip install -r requirements-optional.txt
--r requirements.txt

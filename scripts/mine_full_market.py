@@ -477,6 +477,8 @@ def mine_one(symbol: str, tf: str, cfg, ctx: dict) -> dict:
             from web.data_sources.factory import get_source
             bars = None
             last_err = ""
+            # 机构 D1：腾讯默认后复权（hfq，Qlib 首日归一化后复权同构；
+            # 前复权历史价被未来除权改写）；新浪/通达信为不复权（raw）
             sources = [("tencent", 2, 1.0), ("sina", 2, 2.0), ("tongdaxin", 1, 0.5)]
             for src_kind, n_try, base_wait in sources:
                 if bars:
@@ -485,8 +487,9 @@ def mine_one(symbol: str, tf: str, cfg, ctx: dict) -> dict:
                     src = get_source(src_kind)
                     for attempt in range(n_try):
                         try:
-                            bars = src.fetch_bars(symbol, tf, n=100000,
-                                                  drop_forming=True)
+                            bars = src.fetch_bars(
+                                symbol, tf, n=100000, drop_forming=True,
+                                adjust="hfq" if src_kind == "tencent" else "raw")
                             if bars:
                                 result["detail"]["data"]["source_fallback"] = src_kind
                                 break
@@ -509,7 +512,7 @@ def mine_one(symbol: str, tf: str, cfg, ctx: dict) -> dict:
                 df = df.assign(volume=lambda d: d["volume"] * 100.0)
             store.update(symbol, tf, df,
                          source=result["detail"]["data"].get("source_fallback"),
-                         adjust="qfq" if result["detail"]["data"].get(
+                         adjust="hfq" if result["detail"]["data"].get(
                              "source_fallback") == "tencent" else "raw")
 
         if cfg.bars > 0 and len(df) > cfg.bars:

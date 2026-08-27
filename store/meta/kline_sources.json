@@ -1,0 +1,65 @@
+{
+ "sh600038_1d": {
+  "source": "tencent",
+  "adjust": "hfq",
+  "bars": 6065,
+  "first_ts": 977068800,
+  "last_ts": 1787760000,
+  "conflict_overwrite": false,
+  "updated_ts": 1787798993
+ },
+ "sh600039_1d": {
+  "source": "tencent",
+  "adjust": "hfq",
+  "bars": 5545,
+  "first_ts": 1048521600,
+  "last_ts": 1787760000,
+  "conflict_overwrite": false,
+  "updated_ts": 1787799016
+ },
+ "sh600048_1d": {
+  "source": "tencent",
+  "adjust": "hfq",
+  "bars": 4855,
+  "first_ts": 1154275200,
+  "last_ts": 1787760000,
+  "conflict_overwrite": false,
+  "updated_ts": 1787799031
+ },
+ "sh600050_1d": {
+  "source": "tencent",
+  "adjust": "hfq",
+  "bars": 5662,
+  "first_ts": 1034092800,
+  "last_ts": 1787760000,
+  "conflict_overwrite": false,
+  "updated_ts": 1787799056
+ },
+ "sh600051_1d": {
+  "source": "tencent",
+  "adjust": "hfq",
+  "bars": 6914,
+  "first_ts": 860601600,
+  "last_ts": 1787760000,
+  "conflict_overwrite": false,
+  "updated_ts": 1787799092
+ },
+ "sh600052_1d": {
+  "source": "tencent",
+  "adjust": "hfq",
+  "bars": 6795,
+  "first_ts": 861033600,
+  "last_ts": 1787760000,
+  "conflict_overwrite": false,
+  "updated_ts": 1787799120
+ },
+ "sh600053_1d": {
+  "source": "tencent",
+  "adjust": "hfq",
+  "bars": 6569,
+  "first_ts": 861292800,
+  "last_ts": 1787760000,
+  "conflict_overwrite": false,
+  "updated_ts": 1787799124
+ }
+}

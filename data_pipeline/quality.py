@@ -114,8 +114,7 @@ def detect_sticky_prices(df: pd.DataFrame,
     """检测粘滞价格段：连续 >= min_days 日收盘价完全相同。
 
     Returns:
-        (粘滞总天数, [(起始ts, 结束ts), ...])
-    """
+        (粘滞总天数, [(起始ts, 结束ts), ...])    """
     if df is None or df.empty or "close" not in df.columns:
         return 0, []
     c = df["close"].values.astype(np.float64)
@@ -133,6 +132,25 @@ def detect_sticky_prices(df: pd.DataFrame,
             runs.append((int(ts[i]), int(ts[j])))
         i = j + 1
     return total, runs
+
+
+def detect_suspensions(df: pd.DataFrame) -> set[int]:
+    """停牌日识别（机构 D2）：成交量恒 0 且价格与前一日完全相同的交易日。
+
+    数据源无停牌标记 → 用「零成交 + 价格冻结」双重条件近似（单条件误报高：
+    缩量一字板成交量为 0 但价格会变；放量日价格也可能巧合相同）。
+    Returns: 停牌日 ts 集合（调用方用于因子/标签剔除）。
+    """
+    if df is None or df.empty or "volume" not in df.columns:
+        return set()
+    v = df["volume"].values.astype(np.float64)
+    c = df["close"].values.astype(np.float64)
+    ts = df["ts"].values.astype(np.int64)
+    out: set[int] = set()
+    for i in range(1, len(c)):
+        if v[i] <= 0 and c[i] == c[i - 1]:
+            out.add(int(ts[i]))
+    return out
 
 
 def count_future_timestamps(df: pd.DataFrame,

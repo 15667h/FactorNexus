@@ -110,7 +110,46 @@ python scripts/mine_full_market.py --skip-done
 
 ### 2.3 一句话流程
 
-**挖矿（`mine_full_market.py`）→ 因子入库（FactorStore）→ 浏览/回测（`factor_backtest.py`）→ 组合层（Python API）**
+**挖矿（`mine_full_market.py`）→ 因子入库（FactorStore）→ 浏览/回测（`factor_backtest.py`）→ 组合流水线（`portfolio_pipeline.py`）→ 因子监控（`factor_monitor.py`）**
+
+---
+
+## 二·五、组合流水线与因子监控（P16/P17，炼油厂点火）
+
+```bash
+# 组合层一键流水线：因子库 → 股票得分面板 → 中性化 → 组合构建 → 回测 → 归因
+python scripts/portfolio_pipeline.py
+
+# 组合规模 Top10（多空各 10 只）
+python scripts/portfolio_pipeline.py --n-top 10
+
+# 纯多头组合
+python scripts/portfolio_pipeline.py --long-only
+
+# 拉取行业数据做行业中性化（默认仅风格中性化）
+python scripts/portfolio_pipeline.py --industry
+
+# 输出 Markdown 报告
+python scripts/portfolio_pipeline.py --report store/meta/portfolio_report.md
+
+# 因子监控：全库 IC 衰减/方向/失效预警
+python scripts/factor_monitor.py
+
+# 监控详情（每个因子的认证/实时 RankIC + 衰减轨迹）
+python scripts/factor_monitor.py --detail
+
+# 监控参数：实时段 60 根 / 10 日预测周期
+python scripts/factor_monitor.py --recent 60 --horizon 10
+```
+
+**P16 流水线架构修正**（2026-08-27 真实数据验证）：挖掘层产出「单标的因子」，
+组合层需要「横截面股票面板」——流水线按股票聚合：每只股票的多因子先做
+**IC_IR 时序加权合成**（滚动窗口防前视）→ 形成股票得分面板 → 横截面中性化
+→ 组合构建/回测 → Brinson/风格归因。产物：`store/meta/portfolio_report.md`。
+
+**P17 监控预警规则**：实时段（最近 N 根）RankIC 与入库方向相反（方向翻转）/
+|RankIC| 跌破认证段一半（IC 衰减）/ 块自助 p 不显著 → 预警。
+监控快照：`store/meta/factor_monitor.json`。
 
 ---
 
@@ -746,6 +785,8 @@ python -m pytest tests/ -q                    # 全部 100 项
 | test_p13_backtest_engine.py | 回测引擎（滑点/涨跌停/防前视） | 9 |
 | test_p14_portfolio.py | 组合层（中性化/正交化/合成/组合/归因） | 13 |
 | test_p15_high_freq.py | 高频因子（特征/因果/认证） | 6 |
+| test_p16_pipeline.py | 组合流水线 + 因子监控（P16/P17） | 7 |
+| test_p18_20_institutional.py | 基本面/优化器/Barra/冲击/停牌（P18-P22） | 15 |
 
 ---
 
@@ -756,12 +797,13 @@ Bailey & López de Prado / AlphaEval / AlphaAgent）。
 
 | 层 | 标准 | 状态 |
 |---|---|---|
-| 数据 D1-D4 | 复权（qfq 披露）/停牌（粘滞近似）/健康检查（超出标准）/中国模式 | ✅/⚠️ |
+| 数据 D1-D4 | 复权（腾讯 hfq 后复权，P22）/停牌日识别（P22）/健康检查（超出标准）/中国模式 | ✅ | |
 | 因子 F1-F3 | 因果性（测试锁定）/滚动 MAD 去极值/因果时序 zscore | ✅ |
 | 评估 E1-E5 | IC/RankIC/ICIR/分层/换手/衰减/五维/块自助 | ✅ |
 | 认证 C1-C5 | OOS 三段/DSR·PBO·CPCV/横截面/拥挤度/方向翻转 | ✅ |
 | 回测 B1-B6 | t+1/成本+滑点/板块涨跌停/跳变防御/防前视/组合回测 | ✅ |
 | 组合 P1-P5 | 五因子中性化/正交化/IC_IR·ML 合成/风险模型/Brinson 归因 | ✅ |
+| 组合 P6-P10 | Markowitz·风险平价·BL 优化器/Barra+Ledoit-Wolf 风险/冲击成本/基本面管线/因子监控 | ✅ |
 | 高频 | 分钟管线 + 14 日内特征 + OOS 认证入库 | ✅ |
 
 **已披露的架构性限制**（诚实标注，见 SPEC 第六章）：

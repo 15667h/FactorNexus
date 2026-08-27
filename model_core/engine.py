@@ -78,9 +78,14 @@ def _fallback_data_file_for_symbol(symbol: str) -> tuple[str | None, str | None]
     if not p.exists():
         return None, None
     try:
-        from data_pipeline.parquet_manager import inspect_parquet_file
-
-        info = inspect_parquet_file(str(p.resolve()))
+        # 内联读取 parquet 文件信息（原引用 data_pipeline.parquet_manager 已随
+        # MT5 旧管线删除；A股工作流不依赖 settings 恢复，此处仅解析文件名）
+        info = {}
+        stem = p.stem  # {symbol}_{timeframe}
+        if "_" in stem:
+            sym_part, tf_part = stem.rsplit("_", 1)
+            info["symbol"] = sym_part
+            info["timeframe"] = tf_part
     except Exception:
         return str(p.resolve()), None
     if info.get("symbol") != symbol:
