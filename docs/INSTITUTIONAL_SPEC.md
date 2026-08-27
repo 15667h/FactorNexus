@@ -120,3 +120,16 @@
   - P20 Barra 风险模型：五风格因子 + Ledoit-Wolf 收缩协方差 + 风险分解
   - P21 冲击成本：Almgren-Chriss 平方根法则（k·σ·√(Q/ADV)）
   - P22 复权/停牌：腾讯默认 hfq 后复权（D1 升级）+ 停牌日识别（零成交+价格冻结）
+
+2026-08-27 晚 P23-P26 落地（151 项全量通过）：
+  - P23 挖矿稳定性：RL 引擎 strategy_manager 依赖降级兜底、认证批性能修复
+    （股票池截断 300 + 候选裁剪 + 特征面板缓存——消除第 20 只后主线程满负荷
+    卡死）、LLM 批联动预算护栏（90s）+ 移出持锁路径
+  - P24 策略工厂：M1 数据层（行式样本+通用特征列）→ M2 walk-forward（gap 防
+    标签重叠）→ M3/M4 模型池（LGBM/MLP/S4 对照）→ M5 集成（rank_avg/bagging/
+    stacking 时间分段）→ M6 组合联动；IC_IR 年化 >1.0（139 只池）
+  - P25 顶层风险预算面板化：optimize_portfolio_panel（滚动协方差防前视 + 持有期
+    匹配预测周期），markowitz/risk_parity/black_litterman 接入组合流水线与策略
+    工厂（--optimizer）；优化器路径换手 0.8→0.05/日
+  - P26 文档体系：docs/README.md 文档中心 + ARCHITECTURE_PRINCIPLES.md 原理
+    说明书 + requirements.txt 依赖清理（代码 import 扫描，删除 12 个废弃包）

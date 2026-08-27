@@ -188,7 +188,7 @@ python scripts/factor_monitor.py --recent 60 --horizon 10
 
 ```bash
 # M1→M6 一键全链路（默认 LGBM + 集成 + 评估对比）
-python scripts/mine_signal.py --portfolio --report out/signal_report.md
+python scripts/mine_signal.py --portfolio --n-top 20 --optimizer risk_parity --rebalance 5 --report out/signal_report.md
 
 # 模型池全对比（LGBM/MLP/S4/集成，NN 12 epochs；全量约 1-2 小时）
 python scripts/mine_signal.py --models lgbm,mlp,s4,ensemble

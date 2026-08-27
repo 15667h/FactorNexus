@@ -1,26 +1,2 @@
 symbol,status,n_gp,n_llm,n_rl,n_accepted,best_dsr,best_ic,best_engine,best_formula,elapsed_s
-sh600000,ok,8,3,1,0,0.0,0.0,gp,low的Last（120期·切片0.8）,82.1
-sh600004,ok,11,3,1,0,0.0,0.0,gp,high的Last（60期·切片0.4，按obv_slope掩码low_0.5）,88.0
-sh600007,ok,8,3,1,0,0.0,0.0,gp,macd_hist的Last（全区间·切片0.4，按amt_per_trade掩码high_0.5）,107.9
-sh600006,ok,10,3,1,0,0.0,0.0,gp,price_pos_50的Sum（5期·切片0.6，按trend_strength_50掩码low_0.5）,108.5
-sh600009,ok,8,3,1,0,0.0,0.0,gp,high的Mean（5期·切片0.4）,71.0
-sh600008,ok,9,3,1,0,0.0,0.0,gp,amt_vol_euclid的Last（全区间·切片0.4，按amt_per_trade掩码high_0.5）,90.8
-sh600010,ok,12,3,1,0,0.0,0.0,gp,low的Last（60期·切片0.5，按macd_hist掩码low_0.5）,71.0
-sh600011,ok,9,3,1,0,0.0,0.0,gp,high的Last（全区间·切片0.4，按num_trades掩码high_0.5）,82.3
-sh600012,ok,10,3,1,0,0.0,0.0,gp,amt_vol_euclid的Sum（5期·切片0.9）,59.6
-sh600015,ok,7,3,1,0,0.0,0.0,gp,obv_slope与num_trades_ac1(滞后-1)的Cov（120期·切片0.8，按trend_strength_50掩码low_0.5）,65.1
-sh600016,ok,11,3,1,0,0.0,0.0,gp,low的Last（60期·切片0.5，按macd_hist掩码low_0.7）,59.5
-sh600017,ok,4,3,1,0,0.0,0.0,gp,amt_vol_euclid的Quantile（20期·切片0.4，按macd_hist掩码high_0.7）,62.4
-sh600018,ok,8,3,1,0,0.0,0.0,gp,high的Last（5期·切片0.0，按trend_strength_50掩码high_0.3）,65.8
-sh600020,ok,10,3,1,0,0.0,0.0,gp,amt_per_trade的Last（120期·切片0.8，按amt_per_trade掩码high_0.5）,58.8
-sh600019,ok,7,3,1,0,0.0,0.0,rl,OBV_SLOPE -> SLOPE20 -> DECAY_LINEAR_5 -> TS_STD_20 -> ADD -> RET5 -> MOMENTUM_1,65.2
-sh600021,ok,10,3,1,0,0.0,0.0,gp,roc_12与atr(滞后-4)的R2（60期·切片0.6，按amt_per_trade掩码high_0.3）,62.0
-sh600022,ok,6,3,1,0,0.0,0.0,gp,amt_per_trade的Last（120期·切片0.4，按typical_dev掩码high_0.5）,61.7
-sh600025,ok,12,3,1,0,0.0,0.0,gp,ret20的Last（全区间·切片0.3，按amt_per_trade掩码high_0.5）,53.9
-sh600023,ok,8,3,1,0,0.0,0.0,gp,low的Last（120期·切片0.3）,67.6
-sh600026,ok,9,3,1,0,0.0,0.0,rl,VWAP_DEV -> TS_SKEW_10 -> TS_STD_10 -> CS_SCALE -> ICHIMOKU_KIJUN_DEV -> CCI_14 ,69.6
-sh600027,ok,10,3,1,0,0.0,0.0,gp,ema_ratio_12_26的Last（60期·切片0.4）,79.7
-sh600028,ok,10,3,1,0,0.0,0.0,gp,open与num_trades(滞后0)的Intercept（60期·切片0.6）,90.4
-sh600029,ok,5,3,1,0,0.0,0.0,gp,macd_hist的Range（120期·切片0.4，按num_trades掩码high_0.7）,91.5
-sh600030,ok,7,3,1,0,0.0,0.0,llm,num_trades与amount(滞后-1)的Cov（全区间·切片0.0）,98.1
-sh600031,ok,11,3,1,0,0.0,0.0,llm,num_trades的Skew（20期·切片0.3）,66.6
+sh600000,ok,9,3,1,0,0.0,0.0,gp,low的Quantile（60期·切片0.5，按ret5掩码high_0.7）,46.1

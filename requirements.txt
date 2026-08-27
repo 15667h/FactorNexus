@@ -1,49 +1,51 @@
-# FactorNexus - Full Dependencies
-# Python 3.10+ required (recommended: 3.11 / 3.13)
+# =============================================================================
+# FactorNexus — 核心依赖清单
+# Python 3.12+（实测 3.12.10）
 #
-# Install everything (Chinese Windows tip: use python -m pip):
+# 安装：
 #   python -m pip install -r requirements.txt
-# TradingView source also needs git available for the tvdatafeed line below.
-#   python -m pip install "git+https://github.com/rongardF/tvdatafeed.git"
+#
+# GPU（推荐，RL 引擎加速；无 GPU 自动回退 CPU）：
+#   python -m pip install torch --index-url https://download.pytorch.org/whl/cu124
+#   （与 requirements 中的 torch>=2.1 版本一致即可）
+#
+# 本清单由代码 import 扫描生成（2026-08-27），只含真实使用的包。
+# 已移除历史遗留：MetaTrader5 / tushare / tvdatafeed / fastapi / uvicorn /
+#   python-multipart / pydantic / cryptography / loguru / matplotlib / seaborn /
+#   hypothesis / playwright（代码中已无引用，或属可选工具）
+# =============================================================================
 
-# ===== Deep Learning & Numerical =====
-torch>=2.0.0
-numpy>=1.24.0
-scipy>=1.10.0
-scikit-learn>=1.3.0   # ML 因子合成（P14 combination.combine_ml）
+# ===== 数值计算核心 =====
+numpy>=1.26
+pandas>=2.1
+scipy>=1.11              # 优化器（SLSQP）/ spearmanr / 统计检验
+scikit-learn>=1.3        # ML 合成 / 标准化 / stacking meta（Ridge）
+pyarrow>=14.0            # parquet 存储（KlineStore / FactorStore）
 
-# ===== Data Processing =====
-pandas>=2.0.0
-pyarrow>=14.0.0
+# ===== 深度学习（RL 引擎 + 策略工厂 MLP/S4 模型）=====
+torch>=2.1
 
-# ===== Charts / Visualization =====
-matplotlib>=3.7.0
-seaborn>=0.12.0
+# ===== 因子挖掘（GP 引擎多目标进化）=====
+pymoo>=0.6               # NSGA-III（model_core/engines/gp_engine.py）
 
-# ===== Trading Platforms / Market Data =====
-MetaTrader5>=5.0.45
-tushare>=1.2.89
-pytdx>=1.72
-requests>=2.31.0
-# TradingView (tvDatafeed) — install via git if the VCS line fails on your network:
-#   python -m pip install git+https://github.com/rongardF/tvdatafeed.git
-tvdatafeed @ git+https://github.com/rongardF/tvdatafeed.git
+# ===== 策略工厂（M3 基线模型）=====
+lightgbm>=4.0            # Qlib 基准模型；缺失时自动回退 sklearn GBDT
 
-# ===== Web UI =====
-fastapi>=0.110.0
-uvicorn[standard]>=0.27.0
-python-multipart>=0.0.9
-pydantic>=2.0.0
+# ===== 行情数据源 =====
+pytdx>=1.72              # 通达信协议（不复权全历史兜底源）
+requests>=2.31           # 腾讯 / 新浪行情 + 东财基本面接口
 
-# ===== Auth / Crypto helpers (WorkBuddy token decrypt on Windows) =====
-cryptography>=41.0.0
+# ===== 环境与工具 =====
+python-dotenv>=1.0       # .env → DEEPSEEK_API_KEY 注入
+tqdm>=4.66               # 进度条（挖矿机 / walk-forward）
 
-# ===== Environment & Logging =====
-python-dotenv>=1.0.0
-loguru>=0.7.0
-tqdm>=4.66.0
+# ===== 测试 =====
+pytest>=8.0
 
-# ===== Tests / E2E tooling =====
-pytest>=7.0.0
-hypothesis>=6.0.0
-playwright>=1.40.0
+# =============================================================================
+# 可选（按需安装，不阻塞主流程）
+# =============================================================================
+# py-spy        # 进程卡死/性能诊断：pip install py-spy；py-spy dump --pid <PID>
+# mamba-ssm     # 真 Mamba（策略工厂 S4 对照的升级件）；Windows 请用纯 Python 版：
+#               #   pip install mamba-ssm --no-build-isolation（不含 CUDA 内核）
+# matplotlib    # 画图（回测净值/因子曲线等自定义脚本）
