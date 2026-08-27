@@ -198,16 +198,16 @@ def neutralize_panel(panel: pd.DataFrame, klines: dict[str, pd.DataFrame],
             resid = yv - Xv @ beta
         except np.linalg.LinAlgError:
             resid = yv - yv.mean()
-        # 残差标准化（截面 zscore，防量纲漂移）
+        # 拟合优度：必须用未标准化残差（标准化后量纲被改写，R² 会失真为负）
+        ss_tot = float(np.sum((yv - yv.mean()) ** 2))
+        if ss_tot > 1e-12:
+            r2s.append(1.0 - float(np.sum(resid ** 2)) / ss_tot)
+        # 残差标准化（截面 zscore，防量纲漂移）——仅用于输出面板
         sd = float(np.std(resid))
         if sd > 1e-9:
             resid = (resid - resid.mean()) / sd
         out.loc[ts, [s for s, v in zip(symbols, valid) if v]] = resid
         out.loc[ts, [s for s, v in zip(symbols, valid) if not v]] = np.nan
-        # 拟合优度（中性化前的系统性部分占比）
-        ss_tot = float(np.sum((yv - yv.mean()) ** 2))
-        if ss_tot > 1e-12:
-            r2s.append(1.0 - float(np.sum(resid ** 2)) / ss_tot)
         n_days += 1
     return out, {
         "n_days": n_days, "n_stocks": n_stocks,

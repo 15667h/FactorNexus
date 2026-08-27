@@ -77,6 +77,13 @@ def build_panels(store_dir: str = "store", horizon: int = 5,
             continue
         if bars > 0 and len(kdf) > bars:
             kdf = kdf.iloc[-bars:]
+        # 数据清洗（2026-08-27 修复）：K 线库可能有未来时间戳/重复/0 价格
+        # （历史混库遗留），直接用会污染面板（曾出现 14208 交易日 ≈ 58 年，
+        # 远超 A 股历史——脏 ts 使并集轴膨胀）
+        from data_pipeline.quality import clean_series
+        kdf, _ = clean_series(kdf)
+        if kdf.empty or len(kdf) < 60:
+            continue
         factor = fdf["factor"].values.astype(np.float64)
         close = kdf["close"].values.astype(np.float64)
         n = min(len(factor), len(close))
@@ -94,27 +101,38 @@ def build_panels(store_dir: str = "store", horizon: int = 5,
         stock_desc.setdefault(sym, []).append(
             f"{eng}/{kind} {f['hash'][:8]}")
 
-    # 共同日期轴（全部股票 K 线 ts 并集，排序）
-    all_ts: set[int] = set()
-    for kdf in klines.values():
-        all_ts.update(int(t) for t in kdf["ts"].values)
-    axis = sorted(all_ts)
+    # 共同日期轴 = **因子实际覆盖的交易日**（2026-08-27 修复）：
+    # 之前用全部 K 线 ts 并集（90 只老股票 1992 上市 → 14208 天），而因子只
+    # 覆盖近期 4400 天 → 组合 9800 天空仓（收益 0）却对比全轴基准（正收益）
+    # → 超额恒 -100%、风格R²=-1164 的假象。轴应取因子存在的日期，
+    # 收益面板沿轴对齐（无因子日不参与组合与基准对比）。
+    factor_ts: set[int] = set()
+    for sym, bucket in stock_factors.items():
+        factor_ts.update(int(t) for t in bucket.keys())
+    if not factor_ts:
+        return (pd.DataFrame(), pd.DataFrame(), klines, per_stock)
+    axis = sorted(factor_ts)
     axis_dt = pd.to_datetime(axis, unit="s")
 
-    ret_panel = pd.DataFrame(0.0, index=axis_dt, columns=list(klines))
+    # 收益面板（未来 **1 日** 收益，2026-08-27 修复）：
+    # 组合回测 backtest_portfolio 是每日 mark-to-market（ret1d），若传 horizon 日
+    # 收益会被当作 1 日收益每日兑现 → 复利爆炸（曾出现 max_dd 95%、
+    # 年化+2.79% 与总收益-15% 矛盾的假象）。
+    # 用 NaN 初始化而非 0.0 —— 无数据日应保持 NaN（基准 nanmean 会跳过），
+    # 若填 0 会把基准均值稀释到接近 0，导致超额/IR/风格归因全部失真。
+    ret_panel = pd.DataFrame(np.nan, index=axis_dt, columns=list(klines))
     score_panel = pd.DataFrame(np.nan, index=axis_dt, columns=list(klines))
     for sym, kdf in klines.items():
         close = kdf["close"].values.astype(np.float64)
         t_arr = kdf["ts"].values.astype("int64")
-        # 收益面板（未来 horizon 收益；0/负价格防护）
         t_idx = {int(t): i for i, t in enumerate(t_arr)}
         for i, t in enumerate(axis):
             j = t_idx.get(int(t))
-            if j is not None and j + horizon < len(close):
+            if j is not None and j + 1 < len(close):
                 c0 = close[j]
                 if np.isfinite(c0) and c0 > 1e-9:
                     ret_panel.loc[axis_dt[i], sym] = \
-                        close[j + horizon] / c0 - 1.0
+                        close[j + 1] / c0 - 1.0
         # 股票综合因子：多因子按滚动 IC_IR 加权（时序，防前视）
         dates = sorted(stock_factors.get(sym, {}).keys())
         if not dates:
@@ -195,20 +213,39 @@ def run_pipeline(args) -> dict:
         common = f.index.intersection(r.index)
         fv, rv = f[common].values, r[common].values
         ok = np.isfinite(fv) & np.isfinite(rv)
-        if ok.sum() >= 10 and np.std(fv[ok]) > 1e-12:
-            ics.append(spearmanr(fv[ok], rv[ok]).statistic)
+        # 双侧常数防护：fv 或 rv 任一常数 → spearmanr 未定义（返回 nan）
+        if ok.sum() >= 10 and np.std(fv[ok]) > 1e-12 \
+                and np.std(rv[ok]) > 1e-12:
+            ic = spearmanr(fv[ok], rv[ok]).statistic
+            if np.isfinite(ic):
+                ics.append(ic)
     x_rankic = float(np.mean(ics)) if ics else 0.0
     print(f"[3/8] 合成得分横截面 RankIC: {x_rankic:+.4f} "
           f"（{len(ics)} 个有效截面日）")
 
-    # ── 4. 组合构建 ──────────────────────────────────────────────────
+    # ── 4. 组合构建（P19：顶层风险预算优化器可选）────────────────────
     composite = neutral if neutral.notna().any(axis=1).sum() > 0 \
         else score_panel
-    weights = build_portfolio(composite, n_top=args.n_top,
-                              weights=args.weight, long_short=not args.long_only)
+    opt = getattr(args, "optimizer", "equal")
+    if opt in ("markowitz", "risk_parity", "black_litterman"):
+        from model_core.portfolio.optimizer import optimize_portfolio_panel
+        weights = optimize_portfolio_panel(
+            composite, ret_panel, method=opt, n_top=args.n_top,
+            window=args.opt_window, rebalance=args.rebalance,
+            risk_aversion=args.risk_aversion,
+            long_short=not args.long_only)
+        print(f"[4/8] 组合构建: {'纯多头' if args.long_only else '多空'} "
+              f"Top{args.n_top} 优化器={opt} "
+              f"(窗口{args.opt_window}日/持有{args.rebalance}日/"
+              f"风险厌恶{args.risk_aversion})", flush=True)
+    else:
+        weights = build_portfolio(composite, n_top=args.n_top,
+                                  weights=args.weight,
+                                  long_short=not args.long_only)
+        print(f"[4/8] 组合构建: {'纯多头' if args.long_only else '多空'} "
+              f"Top{args.n_top} 权重={args.weight}", flush=True)
     active = int((weights.abs().sum(axis=1) > 0).sum())
-    print(f"[4/8] 组合构建: {'纯多头' if args.long_only else '多空'} Top{args.n_top} "
-          f"权重={args.weight} 有持仓天数={active}")
+    print(f"      有持仓天数={active}", flush=True)
 
     # ── 5. 组合回测 ──────────────────────────────────────────────────
     bt = backtest_portfolio(weights, ret_panel, cost=args.cost,
@@ -219,7 +256,10 @@ def run_pipeline(args) -> dict:
           f"换手={bt['turnover']:.3f}")
 
     # ── 6. 绩效与风险 ────────────────────────────────────────────────
-    bench = ret_panel.mean(axis=1).values
+    # 基准 = 当日有数据的股票等权均值（nanmean 跳过无数据日；若用 0 填充的
+    # mean 会把基准稀释到接近 0，超额/IR 失真——2026-08-27 修复）
+    bench = ret_panel.mean(axis=1, skipna=True).values
+    bench = np.nan_to_num(bench, nan=0.0)
     perf = performance(bt, bench_ret=bench)
     rm = risk_model(bt["daily_ret"])
     print(f"[6/8] 绩效/风险: 超额={_fmt(perf.get('excess_ret', 0), True)} "
@@ -310,6 +350,17 @@ def main() -> None:
     ap.add_argument("--long-only", action="store_true", help="纯多头（默认多空）")
     ap.add_argument("--weight", default="equal", choices=["equal", "score"],
                     help="权重方式（默认等权）")
+    ap.add_argument("--optimizer", default="equal",
+                    choices=["equal", "score", "markowitz", "risk_parity",
+                             "black_litterman"],
+                    help="顶层风险预算优化器（P19）：equal/score=排序选股；"
+                         "markowitz/risk_parity/black_litterman=风险模型优化")
+    ap.add_argument("--opt-window", type=int, default=60,
+                    help="优化器协方差滚动窗口（交易日，默认 60）")
+    ap.add_argument("--rebalance", type=int, default=5,
+                    help="优化器持有期（交易日，默认 5=匹配 horizon）")
+    ap.add_argument("--risk-aversion", type=float, default=2.0,
+                    help="风险厌恶系数（markowitz/BL，默认 2.0）")
     ap.add_argument("--window", type=int, default=60,
                     help="IC_IR 滚动窗口（默认 60 交易日）")
     ap.add_argument("--ml", action="store_true", help="用随机森林合成（默认 IC_IR）")

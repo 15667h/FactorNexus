@@ -50,6 +50,7 @@ import heapq
 import io
 import json
 import math
+import random
 import sys
 import threading
 import time
@@ -896,21 +897,47 @@ def _certify_batch(cands: list[dict], cert_symbols: list[str], tf: str,
     from model_core.param_vm import ParamVM
 
     # ── 1. 构建认证股票池的数据缓存（所有候选共享）────────────────────
+    # 2026-08-27 性能修复：原实现把 KlineStore 全部缓存股票（~1200 只）+ 全量候选
+    # （每只 10-14 个 ≈ 250+）逐候选×逐股票执行公式 → 特征面板被重复构建数十万次，
+    # 主线程长时间满负荷（表现为"挖矿卡在固定位置"）。修复：候选按股票裁剪 +
+    # 股票池截断 + dm 特征缓存预建。
+    MAX_CERT_STOCKS = 300    # 横截面认证只需 ≥30 只有效股票，300 足够
+    PER_STOCK_CANDS  = 4     # 每只股票最多保留 4 个候选参与认证
+
+    # 候选裁剪：每只股票最多 PER_STOCK_CANDS 个（防止 候选×股票 平方爆炸）
+    n_src = len({c.get("source", "") for c in cands})
+    if len(cands) > PER_STOCK_CANDS * max(1, n_src):
+        per_src: dict[str, int] = {}
+        kept: list[dict] = []
+        for c in cands:
+            src = c.get("source", "")
+            if per_src.get(src, 0) < PER_STOCK_CANDS:
+                per_src[src] = per_src.get(src, 0) + 1
+                kept.append(c)
+        cands = kept
+        stats["n_cands"] = len(cands)
+
     store = KlineStore(cfg.store_dir)
-    # 股票池：KlineStore 已有 A 股 + 本批股票（去重）
+    # 股票池：本批股票优先，缓存股票随机采样补足到 MAX_CERT_STOCKS（去重）
     symbols = []
     seen_sym = set()
     for s in list(cert_symbols) + [c["source"] for c in cands]:
         if s not in seen_sym:
             seen_sym.add(s)
             symbols.append(s)
-    for item in store.list_cached():
-        code = item.get("code", "")
-        if code.startswith(("sh", "sz")) and code not in seen_sym:
+    cached = [item.get("code", "") for item in store.list_cached()
+              if item.get("code", "").startswith(("sh", "sz"))]
+    _rng = random.Random(getattr(cfg, "seed", 42))  # 随机采样保证股票池多样性（非全量）
+    _rng.shuffle(cached)
+    for code in cached:
+        if len(symbols) >= MAX_CERT_STOCKS:
+            break
+        if code not in seen_sym:
             seen_sym.add(code)
             symbols.append(code)
 
-    data: dict[str, dict] = {}   # symbol -> {ind, ret, ts, df}
+    from model_core.feature_bridge import RLDataManager, execute_token_formula
+    data: dict[str, dict] = {}   # symbol -> {ind, ret, ts, df, dm}
     for s in symbols:
         try:
             df = store.load(s, tf)
@@ -926,7 +953,10 @@ def _certify_batch(cands: list[dict], cert_symbols: list[str], tf: str,
             T = len(close)
             ret = _build_ret(close, cfg.horizon)
             ts = df["ts"].values.astype(np.int64)
-            data[s] = {"ind": ind, "ret": ret, "ts": ts, "df": df}
+            # dm 预建（惰性特征面板）：本池所有 token 候选共享同一特征缓存，
+            # 避免每个候选重复构建 65 特征面板（性能修复 2026-08-27）
+            dm = RLDataManager(df, horizon=cfg.horizon)
+            data[s] = {"ind": ind, "ret": ret, "ts": ts, "df": df, "dm": dm}
         except Exception:  # noqa: BLE001
             continue
     stats["n_stocks"] = len(data)
@@ -944,10 +974,7 @@ def _certify_batch(cands: list[dict], cert_symbols: list[str], tf: str,
                         vm = ParamVM(d["ind"])
                         f = vm.execute(chrom_to_formula(cand["chrom"]))
                     else:
-                        from model_core.feature_bridge import RLDataManager, \
-                            execute_token_formula
-                        dm = RLDataManager(d["df"], horizon=cfg.horizon)
-                        ft = execute_token_formula(cand["chrom"], dm)
+                        ft = execute_token_formula(cand["chrom"], d["dm"])
                         f = np.asarray(ft.detach().cpu().numpy(), dtype=np.float64)
                     ret_v = d["ret"][-len(f):] if len(f) != len(d["ret"]) else d["ret"]
                     ts_v = d["ts"][-len(f):]
@@ -1041,11 +1068,14 @@ def _cross_sectional_rankics(series: list) -> tuple[np.ndarray, int]:
 # ── 批级 LLM 联动（联动①②在批次间的落点）───────────────────────────────────
 
 def _llm_batch_discovery(symbol: str, tf: str, cfg, pool: MarketPool,
-                         llm_call) -> list[list[int]]:
+                         llm_call, budget_s: float = 90.0) -> list[list[int]]:
     """批首运行一次真 LLM 挖掘：产出染色体种子注入本批 GP（联动①）。
 
     假设由矿池发现日志驱动（联动②）；公式受矿池新颖性约束。
     无 key 时走规则化降级（仍产出种子，保证每批都有 LLM 参与）。
+    budget_s：批级 LLM 总时间预算护栏（2026-08-27 新增）——DeepSeek API
+    黑洞/超时（120s/次 × 多假设）时强制放弃本轮批联动，防止主线程被
+    拖住导致"挖矿卡死"假象；超预算由外层 except 捕获走规则化降级。
     """
     seeds: list[list[int]] = []
     try:
@@ -1060,8 +1090,21 @@ def _llm_batch_discovery(symbol: str, tf: str, cfg, pool: MarketPool,
         ind = build_indicators(df)
         close = ind["close"]
         ret = _build_ret(close, cfg.horizon)
+        if llm_call is not None:
+            # 总预算护栏：多轮调用共享一个时间池，超时抛错 → 规则化降级
+            _budget = {"left": budget_s}
+            def _budgeted(msgs):
+                if _budget["left"] <= 0:
+                    raise RuntimeError(f"LLM 批预算 {budget_s}s 已用尽")
+                _t0 = time.time()
+                try:
+                    return llm_call(msgs)
+                finally:
+                    _budget["left"] -= time.time() - _t0
+        else:
+            _budgeted = None
         miner = LLMAgentMiner(
-            llm_call=llm_call, max_rounds=cfg.llm_rounds, seed=cfg.seed,
+            llm_call=_budgeted, max_rounds=cfg.llm_rounds, seed=cfg.seed,
             hypotheses=pool.hypotheses_for_llm(k=5) or None,
         )
         results = miner.mine(ind, ret, n_hypotheses=cfg.llm_hyp,
@@ -1296,36 +1339,37 @@ def main() -> None:
             with ctx_lock:
                 batch_counter += 1
                 cert_counter += 1
-                # 联动①②：每 llm_batch 只刷新一次批级 LLM 假设 → 下批 GP 种子
-                if "llm" in engines and batch_counter % max(1, args.llm_batch) == 0:
-                    ctx["gp_seeds"] = _llm_batch_discovery(s, args.tf, args, pool,
-                                                           llm_call)
-                # 机构范式：每 cert_batch 只做一次横截面认证（候选跨股票执行）
-                if cert_counter % max(1, args.cert_batch) == 0 \
-                        or done_cnt == len(universe):
-                    cert_symbols = list(completed[-max(1, args.cert_batch):])
-                    n_cert, st = _certify_batch(pending_cands, cert_symbols,
-                                                args.tf, args, pool, ctx)
-                    for c in n_cert:
-                        total_certified += 1
-                        _save_certified(c, cfg=args, pool=pool)
-                    if n_cert or st["n_cands"]:
-                        print(f"[认证] 批{cert_counter // max(1, args.cert_batch)}: "
-                              f"候选{st['n_cands']} → 横截面通过{st['n_cross']} "
-                              f"(降级单标的{st['n_single']} 拒绝{st['n_reject']}) "
-                              f"股票池{st['n_stocks']}只 交易日{st['n_days']}",
+            # 联动①②：每 llm_batch 只刷新一次批级 LLM 假设 → 下批 GP 种子
+            # （2026-08-27 修复：移出 ctx_lock——持锁做网络 I/O 会阻塞结果消费循环）
+            if "llm" in engines and batch_counter % max(1, args.llm_batch) == 0:
+                ctx["gp_seeds"] = _llm_batch_discovery(s, args.tf, args, pool,
+                                                       llm_call)
+            # 机构范式：每 cert_batch 只做一次横截面认证（候选跨股票执行）
+            if cert_counter % max(1, args.cert_batch) == 0 \
+                    or done_cnt == len(universe):
+                cert_symbols = list(completed[-max(1, args.cert_batch):])
+                n_cert, st = _certify_batch(pending_cands, cert_symbols,
+                                            args.tf, args, pool, ctx)
+                for c in n_cert:
+                    total_certified += 1
+                    _save_certified(c, cfg=args, pool=pool)
+                if n_cert or st["n_cands"]:
+                    print(f"[认证] 批{cert_counter // max(1, args.cert_batch)}: "
+                          f"候选{st['n_cands']} → 横截面通过{st['n_cross']} "
+                          f"(降级单标的{st['n_single']} 拒绝{st['n_reject']}) "
+                          f"股票池{st['n_stocks']}只 交易日{st['n_days']}",
+                          flush=True)
+                    for c in n_cert[:5]:
+                        ck = c["cert"]
+                        print(f"      [入池 {c['engine']}/{c['kind']}] "
+                              f"截面RankIC={ck['rankic']:+.4f} p={ck['p']:.3f} "
+                              f"({ck['mode']}, {ck['stocks']}只×{ck['days']}日) "
+                              f"五维={c['five_total']:.2f} | {c['desc'][:52]}",
                               flush=True)
-                        for c in n_cert[:5]:
-                            ck = c["cert"]
-                            print(f"      [入池 {c['engine']}/{c['kind']}] "
-                                  f"截面RankIC={ck['rankic']:+.4f} p={ck['p']:.3f} "
-                                  f"({ck['mode']}, {ck['stocks']}只×{ck['days']}日) "
-                                  f"五维={c['five_total']:.2f} | {c['desc'][:52]}",
-                                  flush=True)
-                    pending_cands = []
-                if done_cnt % 20 == 0 or done_cnt == len(universe):
-                    _save_progress()
-                    pool.save()
+                pending_cands = []
+            if done_cnt % 20 == 0 or done_cnt == len(universe):
+                _save_progress()
+                pool.save()
             eta = (time.time() - t_all) / done_cnt * (len(universe) - done_cnt)
             status = r["status"]
             print(f"[{done_cnt}/{len(universe)}] {s} {status} "

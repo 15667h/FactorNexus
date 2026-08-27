@@ -21,7 +21,12 @@ import math
 import torch
 from torch import Tensor
 
-from strategy_manager.signal import compute_target_positions_stateless
+try:
+    from strategy_manager.signal import compute_target_positions_stateless
+except ImportError:
+    # 兼容无 strategy_manager 的环境（与 engine.py 同一降级路径）
+    def compute_target_positions_stateless(factors):  # type: ignore
+        return torch.sign(torch.tanh(factors))
 from .config import ModelConfig
 
 _H1_PERIODS_PER_YEAR = 6240

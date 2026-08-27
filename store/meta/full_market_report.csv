@@ -1,201 +1,26 @@
 symbol,status,n_gp,n_llm,n_rl,n_accepted,best_dsr,best_ic,best_engine,best_formula,elapsed_s
-sh600006,ok,9,3,0,0,0.0,0.0,gp,trade_size_reg_intercept的Slope（60期·切片0.0，按ema_ratio_12_26掩码low_0.3）,40.5
-sh600004,ok,8,3,0,0,0.0,0.0,gp,low的Last（60期·切片0.4，按num_trades掩码low_0.7）,41.7
-sh600007,ok,11,3,0,0,0.0,0.0,gp,price_pos_50的Skew（60期·切片0.4）,42.3
-sh600000,ok,10,3,0,0,0.0,0.0,gp,trade_size_reg_intercept的Momentum（120期·切片0.5，按rsi14掩码low_0.5）,43.1
-sh600008,ok,8,3,0,0,0.0,0.0,gp,macd_hist的Last（120期·切片0.8，按obv_slope掩码high_0.5）,41.1
-sh600009,ok,7,3,0,0,0.0,0.0,gp,low的Last（60期·切片0.9）,45.0
-sh600010,ok,10,3,0,0,0.0,0.0,gp,trade_size_reg_intercept与ema_ratio_12_26(滞后2)的Corr（20期·切片0.5）,47.3
-sh600011,ok,10,3,0,0,0.0,0.0,gp,ult_osc的Last（120期·切片0.1，按ppo掩码high_0.3）,48.0
-sh600012,ok,10,3,0,0,0.0,0.0,gp,low的Last（5期·切片0.5，按trix_15掩码low_0.7）,26.6
-sh600015,ok,9,3,0,0,0.0,0.0,gp,close的Mean（20期·切片0.0）,23.3
-sh600016,ok,9,3,0,0,0.0,0.0,gp,low的Last（20期·切片0.4，按macd_hist掩码low_0.5）,21.0
-sh600017,ok,8,3,0,0,0.0,0.0,gp,boll_pos的Sum（120期·切片0.8，按trade_size_reg_intercept掩码high_0.7）,22.0
-sh600018,ok,5,3,0,0,0.0,0.0,gp,low的Last（60期·切片0.9，按macd_hist掩码low_0.5）,20.8
-sh600019,ok,4,3,0,0,0.0,0.0,gp,typical_dev的Quantile（60期·切片0.9，按num_trades掩码high_0.5）,20.6
-sh600020,ok,9,3,0,0,0.0,0.0,gp,macd_hist与ret5(滞后1)的Intercept（60期·切片0.6）,22.6
-sh600021,ok,8,3,0,0,0.0,0.0,gp,amt_per_trade的Kurt（20期·切片0.0，按macd_hist掩码high_0.7）,22.0
-sh600022,ok,10,3,0,0,0.0,0.0,gp,low的Last（120期·切片0.5，按high掩码high_0.3）,17.8
-sh600023,ok,11,3,0,0,0.0,0.0,gp,obv_slope的Momentum（60期·切片0.7）,20.8
-sh600026,ok,7,3,0,0,0.0,0.0,gp,amt_vol_euclid的Last（20期·切片1.0，按rsi14掩码high_0.5）,20.8
-sh600025,ok,11,3,0,0,0.0,0.0,gp,close的Last（120期·切片0.3，按macd_hist掩码low_0.3）,23.4
-sh600027,ok,12,3,0,0,0.0,0.0,gp,amt_vol_euclid的Sum（10期·切片0.3，按rsi14掩码low_0.3）,20.6
-sh600028,ok,9,3,0,0,0.0,0.0,gp,ppo与num_trades(滞后1)的Intercept（5期·切片0.0，按trix_15掩码low_0.5）,23.7
-sh600029,ok,9,3,0,0,0.0,0.0,gp,trend_strength_50的Sum（20期·切片0.1，按trade_size_reg_intercept掩码high_0.3）,25.0
-sh600030,ok,8,3,0,0,0.0,0.0,gp,ret的Mean（20期·切片0.9，按trade_size_reg_intercept掩码high_0.3）,24.5
-sh600031,ok,6,3,0,0,0.0,0.0,llm,num_trades的Skew（20期·切片0.3）,21.2
-sh600032,ok,9,3,0,0,0.0,0.0,llm,num_trades的Skew（20期·切片0.3）,29.0
-sh600033,ok,8,3,0,0,0.0,0.0,gp,ppo的Quantile（120期·切片0.3，按amt_per_trade掩码high_0.5）,27.9
-sh600035,ok,7,3,0,0,0.0,0.0,gp,high的Quantile（120期·切片0.6，按willr_14掩码low_0.5）,28.0
-sh600036,ok,8,3,0,0,0.0,0.0,gp,macd_hist的Kurt（60期·切片0.6，按amt_per_trade掩码low_0.3）,28.0
-sh600037,ok,9,3,0,0,0.0,0.0,gp,high的Mean（10期·切片0.1，按close掩码low_0.5）,25.1
-sh600038,ok,11,3,0,0,0.0,0.0,gp,amt_vol_euclid的Quantile（60期·切片0.5，按num_trades掩码high_0.7）,49.1
-sh600039,ok,9,3,0,0,0.0,0.0,gp,num_trades_ac1的Sum（10期·尾盘，按boll_width掩码high_0.7）,51.1
-sh600048,ok,8,3,0,0,0.0,0.0,gp,rvol与typical_dev(滞后-3)的Intercept（20期·切片0.4，按cci_14掩码low_0.3）,53.3
-sh600050,ok,8,3,0,0,0.0,0.0,gp,ema_ratio_12_26的Sum（10期·切片0.5）,48.1
-sh600054,too_short,0,0,0,0,0.0,0.0,,清洗后仅 67 根（<120）,0.0
-sh600055,too_short,0,0,0,0,0.0,0.0,,清洗后仅 67 根（<120）,0.0
-sh600052,ok,8,3,0,0,0.0,0.0,gp,macd_hist的Last（全区间·切片0.4，按amt_per_trade掩码high_0.5）,36.0
-sh600051,ok,11,3,0,0,0.0,0.0,gp,low的Last（60期·切片0.5，按macd_hist掩码low_0.7）,39.1
-sh600053,ok,6,3,0,0,0.0,0.0,gp,low的Mad（60期·切片0.6，按rsi14掩码low_0.5）,29.4
-sh600056,too_short,0,0,0,0,0.0,0.0,,清洗后仅 67 根（<120）,0.0
-sh600057,too_short,0,0,0,0,0.0,0.0,,清洗后仅 67 根（<120）,0.0
-sh600058,too_short,0,0,0,0,0.0,0.0,,清洗后仅 67 根（<120）,0.0
-sh600059,too_short,0,0,0,0,0.0,0.0,,清洗后仅 67 根（<120）,0.0
-sh600060,too_short,0,0,0,0,0.0,0.0,,清洗后仅 67 根（<120）,0.0
-sh600061,too_short,0,0,0,0,0.0,0.0,,清洗后仅 67 根（<120）,0.0
-sh600062,too_short,0,0,0,0,0.0,0.0,,清洗后仅 67 根（<120）,0.0
-sh600063,too_short,0,0,0,0,0.0,0.0,,清洗后仅 67 根（<120）,0.0
-sh600064,too_short,0,0,0,0,0.0,0.0,,清洗后仅 67 根（<120）,0.0
-sh600066,too_short,0,0,0,0,0.0,0.0,,清洗后仅 67 根（<120）,0.0
-sh600067,too_short,0,0,0,0,0.0,0.0,,清洗后仅 67 根（<120）,0.0
-sh600071,too_short,0,0,0,0,0.0,0.0,,清洗后仅 67 根（<120）,0.0
-sh600072,too_short,0,0,0,0,0.0,0.0,,清洗后仅 67 根（<120）,0.0
-sh600073,too_short,0,0,0,0,0.0,0.0,,清洗后仅 67 根（<120）,0.0
-sh600075,too_short,0,0,0,0,0.0,0.0,,清洗后仅 67 根（<120）,0.0
-sh600076,too_short,0,0,0,0,0.0,0.0,,清洗后仅 67 根（<120）,0.0
-sh600078,too_short,0,0,0,0,0.0,0.0,,清洗后仅 67 根（<120）,0.0
-sh600079,too_short,0,0,0,0,0.0,0.0,,清洗后仅 67 根（<120）,0.0
-sh600080,too_short,0,0,0,0,0.0,0.0,,清洗后仅 67 根（<120）,0.0
-sh600081,too_short,0,0,0,0,0.0,0.0,,清洗后仅 67 根（<120）,0.0
-sh600084,ok,11,3,0,0,0.0,0.0,gp,low的Last（60期·切片0.5，按macd_hist掩码low_0.7）,55.8
-sh600088,ok,9,3,0,0,0.0,0.0,gp,volume的Range（120期·切片0.2，按ema_ratio_12_26掩码high_0.5）,52.6
-sh600082,ok,9,3,0,0,0.0,0.0,gp,high的Std（120期·切片0.8，按ema_ratio_12_26掩码high_0.5）,60.2
-sh600085,ok,10,3,0,0,0.0,0.0,gp,willr_14与mfi14(滞后2)的R2（10期·切片0.2，按amt_vol_euclid掩码high_0.5）,55.1
-sh600089,ok,11,3,0,0,0.0,0.0,gp,rsi14的Last（全区间·切片0.4，按amt_per_trade掩码high_0.5）,45.8
-sh600094,ok,11,3,0,0,0.0,0.0,gp,ema_ratio_12_26的Mean（5期·切片0.3）,45.6
-sh600096,ok,8,3,0,0,0.0,0.0,gp,boll_pos与cci_14(滞后0)的Intercept（5期·切片0.8，按boll_width掩码high_0.5）,45.7
-sh600095,ok,10,3,0,0,0.0,0.0,gp,trade_size_reg_intercept的Momentum（20期·切片0.4）,46.4
-sh600097,ok,11,3,0,0,0.0,0.0,gp,vol_regime的Mean（20期·切片0.3，按num_trades掩码high_0.3）,44.4
-sh600098,ok,5,3,0,0,0.0,0.0,gp,low的Last（120期·切片0.8，按amt_vol_euclid掩码high_0.3）,44.4
-sh600100,ok,9,3,0,0,0.0,0.0,gp,macd_hist的Last（20期·切片0.7）,44.0
-sh600099,ok,8,3,0,0,0.0,0.0,gp,ppo的Quantile（全区间·切片0.2，按mfi14掩码high_0.7）,44.4
-sh600103,ok,9,3,0,0,0.0,0.0,gp,rsi14的Mean（60期·切片0.0）,44.5
-sh600104,ok,6,3,0,0,0.0,0.0,gp,rsi14与boll_pos(滞后1)的Euclid（20期·切片0.2）,45.5
-sh600105,ok,5,3,0,0,0.0,0.0,llm,num_trades的Skew（20期·切片0.3）,45.6
-sh600101,ok,13,3,0,0,0.0,0.0,gp,volume与boll_pos(滞后-4)的Slope2（120期·切片0.8）,46.7
-sh600106,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600106。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600107,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600107。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600108,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600108。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600109,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600109。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600110,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600110。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600111,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600111。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600113,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600113。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600114,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600114。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600115,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600115。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600116,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600116。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600117,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600117。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600118,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600118。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600119,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600119。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600120,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600120。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600121,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600121。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600123,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600123。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600125,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600125。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600126,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600126。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600127,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600127。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600128,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600128。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600129,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600129。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600130,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600130。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600131,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600131。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600132,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600132。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600133,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600133。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600135,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600135。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600136,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600136。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600137,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600137。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600138,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600138。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600141,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600141。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600143,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600143。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600148,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600148。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600149,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600149。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600150,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600150。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600151,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600151。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600152,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600152。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600153,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600153。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600155,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600155。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600156,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600156。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600157,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600157。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600158,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600158。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600159,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600159。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600160,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600160。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600161,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600161。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600162,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600162。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600166,too_short,0,0,0,0,0.0,0.0,,清洗后仅 67 根（<120）,0.0
-sh600163,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600163。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600165,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600165。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600167,too_short,0,0,0,0,0.0,0.0,,清洗后仅 67 根（<120）,0.0
-sh600168,too_short,0,0,0,0,0.0,0.0,,清洗后仅 67 根（<120）,0.0
-sh600169,too_short,0,0,0,0,0.0,0.0,,清洗后仅 67 根（<120）,0.0
-sh600170,too_short,0,0,0,0,0.0,0.0,,清洗后仅 67 根（<120）,0.0
-sh600171,too_short,0,0,0,0,0.0,0.0,,清洗后仅 67 根（<120）,0.0
-sh600172,too_short,0,0,0,0,0.0,0.0,,清洗后仅 67 根（<120）,0.0
-sh600173,too_short,0,0,0,0,0.0,0.0,,清洗后仅 67 根（<120）,0.0
-sh600176,too_short,0,0,0,0,0.0,0.0,,清洗后仅 67 根（<120）,0.0
-sh600177,too_short,0,0,0,0,0.0,0.0,,清洗后仅 67 根（<120）,0.0
-sh600178,too_short,0,0,0,0,0.0,0.0,,清洗后仅 67 根（<120）,0.0
-sh600179,too_short,0,0,0,0,0.0,0.0,,清洗后仅 67 根（<120）,0.0
-sh600180,too_short,0,0,0,0,0.0,0.0,,清洗后仅 67 根（<120）,0.0
-sh600182,too_short,0,0,0,0,0.0,0.0,,清洗后仅 67 根（<120）,0.0
-sh600183,too_short,0,0,0,0,0.0,0.0,,清洗后仅 67 根（<120）,0.0
-sh600184,too_short,0,0,0,0,0.0,0.0,,清洗后仅 67 根（<120）,0.0
-sh600185,too_short,0,0,0,0,0.0,0.0,,清洗后仅 67 根（<120）,0.0
-sh600186,too_short,0,0,0,0,0.0,0.0,,清洗后仅 67 根（<120）,0.0
-sh600187,too_short,0,0,0,0,0.0,0.0,,清洗后仅 67 根（<120）,0.0
-sh600188,too_short,0,0,0,0,0.0,0.0,,清洗后仅 67 根（<120）,0.0
-sh600189,too_short,0,0,0,0,0.0,0.0,,清洗后仅 67 根（<120）,0.0
-sh600191,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600191。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600192,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600192。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600195,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600195。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600196,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600196。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600197,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600197。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600198,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600198。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600199,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600199。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600201,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600201。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600202,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600202。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600203,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600203。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600206,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600206。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600207,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600207。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600210,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600210。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600208,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600208。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600211,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600211。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600212,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600212。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600216,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600216。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600215,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600215。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600217,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600217。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600218,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600218。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600221,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600221。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600219,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600219。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600222,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600222。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600223,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600223。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600226,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600226。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600227,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600227。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600228,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600228。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600229,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600229。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600230,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600230。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600231,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600231。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600232,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600232。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600233,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600233。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600235,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600235。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600234,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600234。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600236,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600236。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600237,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600237。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600239,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600239。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600238,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600238。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600241,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600241。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600243,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600243。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600246,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600246。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600249,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600249。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600248,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600248。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600250,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600250。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600251,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600251。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600252,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600252。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600255,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600255。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600256,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600256。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600257,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600257。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600258,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600258。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600259,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600259。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600261,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600261。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600262,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600262。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600265,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600265。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600266,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600266。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600267,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600267。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
-sh600268,no_data,0,0,0,0,0.0,0.0,,DataSourceUnavailable: 通达信无数据：sh600268。请确认代码正确；指数需带 sh/sz 前缀（如 sh000001）。,0.0
+sh600000,ok,8,3,1,0,0.0,0.0,gp,low的Last（120期·切片0.8）,82.1
+sh600004,ok,11,3,1,0,0.0,0.0,gp,high的Last（60期·切片0.4，按obv_slope掩码low_0.5）,88.0
+sh600007,ok,8,3,1,0,0.0,0.0,gp,macd_hist的Last（全区间·切片0.4，按amt_per_trade掩码high_0.5）,107.9
+sh600006,ok,10,3,1,0,0.0,0.0,gp,price_pos_50的Sum（5期·切片0.6，按trend_strength_50掩码low_0.5）,108.5
+sh600009,ok,8,3,1,0,0.0,0.0,gp,high的Mean（5期·切片0.4）,71.0
+sh600008,ok,9,3,1,0,0.0,0.0,gp,amt_vol_euclid的Last（全区间·切片0.4，按amt_per_trade掩码high_0.5）,90.8
+sh600010,ok,12,3,1,0,0.0,0.0,gp,low的Last（60期·切片0.5，按macd_hist掩码low_0.5）,71.0
+sh600011,ok,9,3,1,0,0.0,0.0,gp,high的Last（全区间·切片0.4，按num_trades掩码high_0.5）,82.3
+sh600012,ok,10,3,1,0,0.0,0.0,gp,amt_vol_euclid的Sum（5期·切片0.9）,59.6
+sh600015,ok,7,3,1,0,0.0,0.0,gp,obv_slope与num_trades_ac1(滞后-1)的Cov（120期·切片0.8，按trend_strength_50掩码low_0.5）,65.1
+sh600016,ok,11,3,1,0,0.0,0.0,gp,low的Last（60期·切片0.5，按macd_hist掩码low_0.7）,59.5
+sh600017,ok,4,3,1,0,0.0,0.0,gp,amt_vol_euclid的Quantile（20期·切片0.4，按macd_hist掩码high_0.7）,62.4
+sh600018,ok,8,3,1,0,0.0,0.0,gp,high的Last（5期·切片0.0，按trend_strength_50掩码high_0.3）,65.8
+sh600020,ok,10,3,1,0,0.0,0.0,gp,amt_per_trade的Last（120期·切片0.8，按amt_per_trade掩码high_0.5）,58.8
+sh600019,ok,7,3,1,0,0.0,0.0,rl,OBV_SLOPE -> SLOPE20 -> DECAY_LINEAR_5 -> TS_STD_20 -> ADD -> RET5 -> MOMENTUM_1,65.2
+sh600021,ok,10,3,1,0,0.0,0.0,gp,roc_12与atr(滞后-4)的R2（60期·切片0.6，按amt_per_trade掩码high_0.3）,62.0
+sh600022,ok,6,3,1,0,0.0,0.0,gp,amt_per_trade的Last（120期·切片0.4，按typical_dev掩码high_0.5）,61.7
+sh600025,ok,12,3,1,0,0.0,0.0,gp,ret20的Last（全区间·切片0.3，按amt_per_trade掩码high_0.5）,53.9
+sh600023,ok,8,3,1,0,0.0,0.0,gp,low的Last（120期·切片0.3）,67.6
+sh600026,ok,9,3,1,0,0.0,0.0,rl,VWAP_DEV -> TS_SKEW_10 -> TS_STD_10 -> CS_SCALE -> ICHIMOKU_KIJUN_DEV -> CCI_14 ,69.6
+sh600027,ok,10,3,1,0,0.0,0.0,gp,ema_ratio_12_26的Last（60期·切片0.4）,79.7
+sh600028,ok,10,3,1,0,0.0,0.0,gp,open与num_trades(滞后0)的Intercept（60期·切片0.6）,90.4
+sh600029,ok,5,3,1,0,0.0,0.0,gp,macd_hist的Range（120期·切片0.4，按num_trades掩码high_0.7）,91.5
+sh600030,ok,7,3,1,0,0.0,0.0,llm,num_trades与amount(滞后-1)的Cov（全区间·切片0.0）,98.1
+sh600031,ok,11,3,1,0,0.0,0.0,llm,num_trades的Skew（20期·切片0.3）,66.6

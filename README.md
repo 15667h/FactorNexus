@@ -14,19 +14,21 @@
 
 1. [系统全景](#一系统全景)
 2. [快速开始](#二快速开始)
-3. [全市场挖矿机命令手册](#三全市场挖矿机命令手册)
-4. [因子库浏览与回测命令手册](#四因子库浏览与回测命令手册)
-5. [高频因子挖掘命令手册](#五高频因子挖掘命令手册)
-6. [数据与库健康审计](#六数据与库健康审计)
-7. [组合层 API 手册（P14）](#七组合层-api-手册p14)
-8. [数据管道与质量保障](#八数据管道与质量保障)
-9. [机构级认证与回测口径](#九机构级认证与回测口径)
-10. [输出产物一览](#十输出产物一览)
-11. [项目结构](#十一项目结构)
-12. [测试](#十二测试)
-13. [机构级标准对照](#十三机构级标准对照)
-14. [常见问题 FAQ](#十四常见问题-faq)
-15. [版本历史](#十五版本历史)
+3. [组合流水线与因子监控](#二五组合流水线与因子监控p16p17炼油厂点火)
+4. [策略工厂（P24：M1-M6 全链路）](#二六策略工厂p24因子--预测信号--组合m1-m6-全链路)
+5. [全市场挖矿机命令手册](#三全市场挖矿机命令手册)
+6. [因子库浏览与回测命令手册](#四因子库浏览与回测命令手册)
+7. [高频因子挖掘命令手册](#五高频因子挖掘命令手册)
+8. [数据与库健康审计](#六数据与库健康审计)
+9. [组合层 API 手册（P14）](#七组合层-api-手册p14)
+10. [数据管道与质量保障](#八数据管道与质量保障)
+11. [机构级认证与回测口径](#九机构级认证与回测口径)
+12. [输出产物一览](#十输出产物一览)
+13. [项目结构](#十一项目结构)
+14. [测试](#十二测试)
+15. [机构级标准对照](#十三机构级标准对照)
+16. [常见问题 FAQ](#十四常见问题-faq)
+17. [版本历史](#十五版本历史)
 
 ---
 
@@ -79,6 +81,8 @@
 | 数据质量防线 | 复权口径冲突检测（防止 qfq/不复权混库）、跳变分类（混库标的自动拒挖）、OHLC 一致性、粘滞价格检测 |
 | 组合层闭环 | 从单因子到组合：中性化 → 正交化 → 合成 → 组合回测 → Brinson 归因 |
 | 高频因子 | 分钟级数据 → 14 个日内特征（跳空/振幅/波动/量价相关/尾部风险等） |
+| 策略工厂（P24） | 因子库 → ML 预测信号：walk-forward + 模型池（LGBM/MLP/S4）+ 集成（rank_avg/bagging/stacking），IC_IR 年化 >1.0 |
+| 顶层风险预算（P19） | markowitz / risk_parity / black_litterman 面板优化，滚动协方差防前视，换手 0.8→0.05/日 |
 
 ---
 
@@ -121,7 +125,7 @@ python scripts/mine_full_market.py --skip-done
 python scripts/portfolio_pipeline.py
 
 # 组合规模 Top10（多空各 10 只）
-python scripts/portfolio_pipeline.py --n-top 10
+python scripts/portfolio_pipeline.py --n-top 20
 
 # 纯多头组合
 python scripts/portfolio_pipeline.py --long-only
@@ -131,6 +135,13 @@ python scripts/portfolio_pipeline.py --industry
 
 # 输出 Markdown 报告
 python scripts/portfolio_pipeline.py --report store/meta/portfolio_report.md
+
+# 顶层风险预算（P19）：用优化器替代等权/得分权重
+python scripts/portfolio_pipeline.py --optimizer markowitz          # 均值-方差
+python scripts/portfolio_pipeline.py --optimizer risk_parity        # 风险平价
+python scripts/portfolio_pipeline.py --optimizer black_litterman    # BL 观点融合
+python scripts/portfolio_pipeline.py --optimizer markowitz --opt-window 120 \
+    --rebalance 10 --risk-aversion 3.0   # 协方差窗口/持有期/风险厌恶
 
 # 因子监控：全库 IC 衰减/方向/失效预警
 python scripts/factor_monitor.py
@@ -150,6 +161,52 @@ python scripts/factor_monitor.py --recent 60 --horizon 10
 **P17 监控预警规则**：实时段（最近 N 根）RankIC 与入库方向相反（方向翻转）/
 |RankIC| 跌破认证段一半（IC 衰减）/ 块自助 p 不显著 → 预警。
 监控快照：`store/meta/factor_monitor.json`。
+
+---
+
+## 二·六、策略工厂（P24：因子 → 预测信号 → 组合，M1-M6 全链路）
+
+策略工厂是系统的**中层策略层**：把因子库（原料）加工成 ML 预测信号（半成品），
+对标微软 Qlib 机器学习选股管线 + 华泰金工《人工智能选股》系列。
+
+```
+因子库 store/factors/ (676+ 因子)
+   │
+   ▼
+[M1 数据层]   dataset.py：因子面板 → 行式样本（特征矩阵 + 未来 H 日收益标签）
+   │          全因果特征 + 风格列(ret20/vol20/mcap/turn/score) 解决因子稀疏
+   ▼
+[M2 walk-forward]  walk_forward.py：滚动训练 → OOS 预测（gap 防标签泄漏）
+   ▼
+[M3/M4 模型池]    lgbm（基线）/ mlp（PyTorch）/ s4（纯 PyTorch 状态空间对照）
+   ▼
+[M5 集成]        ensemble.py：rank_avg（截面排名加权）/ bagging（多 seed）/
+   │            异质集成 / stacking（时间分段两层）
+   ▼
+[M6 组合联动]    信号面板 → 组合构建（--optimizer 风险预算）→ 回测/绩效/风险
+```
+
+```bash
+# M1→M6 一键全链路（默认 LGBM + 集成 + 评估对比）
+python scripts/mine_signal.py --portfolio --report out/signal_report.md
+
+# 模型池全对比（LGBM/MLP/S4/集成，NN 12 epochs；全量约 1-2 小时）
+python scripts/mine_signal.py --models lgbm,mlp,s4,ensemble
+
+# 叠加时间分段 stacking（两层）
+python scripts/mine_signal.py --stacking
+
+# 接入组合层 + 顶层风险预算优化器
+python scripts/mine_signal.py --portfolio --optimizer risk_parity --rebalance 5
+
+# 调参：折长/窗口/树数/NN 轮数
+python scripts/mine_signal.py --step 180 --window 360 --trees 300 --nn-epochs 15
+```
+
+**当前实测**（139 只股票 / 676 因子 / 16 万样本）：LGBM 横截面 RankIC +0.013~0.028
+（受限于股票池规模，全市场铺满后预计进入 Qlib 基准区间 0.03-0.05）、IC_IR 年化 >1.0、
+前后半段方向一致、十分组单调。**M6 关键工程决策**：信号预测 H 日收益 → 调仓周期
+必须匹配（`--rebalance 5`），弱信号每日重排的换手成本会吞噬全部 alpha。
 
 ---
 
@@ -735,8 +792,11 @@ feats = build_highfreq_features(minute_df)
 ```
 FactorNexus/
 ├── scripts/
-│   ├── mine_full_market.py   # 全市场三引擎联动挖矿机（主入口）
+│   ├── mine_full_market.py   # 全市场三引擎联动挖矿机（主入口，断点续跑）
+│   ├── mine_signal.py        # 策略工厂一键流程（P24 M1→M6 全链路）
+│   ├── portfolio_pipeline.py # 组合层一键流水线（中性化/合成/风险预算/归因）
 │   ├── factor_backtest.py    # 因子库浏览 + 因子回测（终端工具）
+│   ├── factor_monitor.py     # 因子监控（IC 衰减/方向翻转/失效预警）
 │   └── mine_high_freq.py     # 高频因子挖掘（分钟级 → 日频特征）
 ├── model_core/
 │   ├── engines/              # GP（NSGA-III 五目标）+ LLM（多智能体三重正则）
@@ -745,20 +805,25 @@ FactorNexus/
 │   ├── param_vm.py           # 参数化公式执行器（34 指标，因果后处理）
 │   ├── vm.py / ops.py / vocab.py  # token 公式 StackVM（65 特征 / 66 算子）
 │   ├── feature_bridge.py     # RL 特征桥（K线 → 65 特征面板）
+│   ├── fundamentals.py       # 基本面管线（P18：东财业绩 + 腾讯估值）
 │   ├── highfreq_features.py  # 高频因子特征（14 个日内特征）
-│   ├── portfolio/            # 组合层 P14（中性化/正交化/合成/组合/归因）
+│   ├── portfolio/            # 组合层 P14-P21（中性化/正交化/合成/优化器/
+│   │                         #   barra_risk/impact_cost/归因）
+│   ├── strategy_factory/     # 策略工厂 P24（dataset/walk_forward/models/
+│   │                         #   ensemble/evaluate）
 │   └── eval/                 # 五维评估 + DSR/PBO/CPCV 过拟合控制
 ├── web/
 │   ├── ai_providers.py       # DeepSeek LLM 调用（批级联动）
-│   └── data_sources/         # 行情源（腾讯 / 新浪 / 通达信 / OKX / MT5 等）
+│   └── data_sources/         # 行情源（腾讯 qfq/hfq / 新浪 / 通达信 pytdx）
 ├── data_pipeline/
 │   ├── quality.py            # 机构 D3 健康检查与清洗
 │   └── store/                # K线 / 因子 / 标签 四库分层存储
-├── strategy_manager/signal.py # 信号口径（RL 引擎内部使用）
 ├── docs/
 │   ├── INSTITUTIONAL_SPEC.md     # 机构级规范（单一事实来源）
-│   └── INSTITUTIONAL_AUDIT_2026.md # 机构级审计报告
-├── tests/                    # P6-P15 共 100 项测试
+│   ├── INSTITUTIONAL_AUDIT_2026.md # 机构级审计报告
+│   ├── STRATEGY_FACTORY_PLAN.md  # 策略工厂实施方案（M1-M6 状态）
+│   └── ARCHITECTURE_PRINCIPLES.md # 架构原理系统评估说明书
+├── tests/                    # P6-P26 共 151 项测试
 ├── store/                    # 数据产物（K线 / 因子 / 矿池 / 清单）
 ├── strategies/               # 策略输出 best_{symbol}.json
 ├── _refetch_kline.py         # 污染 K 线审计 + 重拉工具
@@ -770,7 +835,7 @@ FactorNexus/
 ## 十二、测试
 
 ```bash
-python -m pytest tests/ -q                    # 全部 100 项
+python -m pytest tests/ -q                    # 全部 151 项（约 80 秒）
 ```
 
 | 套件 | 覆盖 | 数量 |
@@ -787,6 +852,8 @@ python -m pytest tests/ -q                    # 全部 100 项
 | test_p15_high_freq.py | 高频因子（特征/因果/认证） | 6 |
 | test_p16_pipeline.py | 组合流水线 + 因子监控（P16/P17） | 7 |
 | test_p18_20_institutional.py | 基本面/优化器/Barra/冲击/停牌（P18-P22） | 15 |
+| test_p25_strategy_factory_m45.py | 策略工厂模型池/集成/持有平滑（M4-M6） | 9 |
+| test_p26_top_level_risk_budget.py | 顶层风险预算面板优化（P19 接入） | 11 |
 
 ---
 
@@ -871,6 +938,10 @@ Bailey 2014 原文修正后，对 383 次挖掘试验的校正要求年化夏普
 | 2026-08-26 晚 | 数据质量层强化（OHLC/粘滞/未来戳/跳变分类/混库防护）、KlineStore 冲突检测升级、来源元数据、回测引擎增强（滑点/板块涨跌停/跳变冻结/方向防前视） |
 | 2026-08-27 | **P14 组合层**（五因子中性化/正交化/IC_IR·ML 合成/组合回测/风险模型/Brinson 归因）+ **P15 高频因子**（分钟管线 + 14 日内特征 + OOS 认证入库）；全量 100 项测试 |
 | 2026-08-27 | 更名为 **FactorNexus**（全市场量化因子联动挖掘中心），因子库清空重建，30 只实测全链路验证通过 |
+| 2026-08-27 | **P18-P21 机构化补齐**：基本面管线（东财业绩 + 腾讯估值）、因子监控、Barra 风险模型 + Ledoit-Wolf、冲击成本模型 + 归因；全量 131 项测试 |
+| 2026-08-27 | **P24 策略工厂 M1-M6**：数据层（dataset.py）→ walk-forward（gap 防泄漏）→ 模型池（LGBM/MLP/S4）→ 集成（rank_avg/bagging/stacking）→ 评估对比 → 组合层联动；IC_IR 年化 >1.0 |
+| 2026-08-27 | **挖矿稳定性修复**：RL 引擎 strategy_manager 依赖降级（兜底实现）、认证批性能修复（股票池截断 300 + 候选裁剪 + 特征面板缓存，消除第 20 只卡死）、LLM 批联动预算护栏（90s）、批级 LLM 移出持锁路径 |
+| 2026-08-27 | **顶层风险预算（P19 接入）**：optimize_portfolio_panel（markowitz/risk_parity/black_litterman 面板优化，滚动协方差 + 持有期 + 防前视）接入组合流水线与策略工厂；优化器路径换手 0.8→0.05/日；全量 151 项测试 |
 
 ---
 

@@ -1,911 +1,2846 @@
 {
- "sh600038_1d": {
-  "source": "tencent",
-  "adjust": "hfq",
-  "bars": 6065,
-  "first_ts": 977068800,
-  "last_ts": 1787760000,
+ "sh603072_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 399,
+  "first_ts": 1735833600,
+  "last_ts": 1787673600,
   "conflict_overwrite": false,
-  "updated_ts": 1787798993
+  "updated_ts": 1787808181
  },
- "sh600039_1d": {
-  "source": "tencent",
-  "adjust": "hfq",
-  "bars": 5545,
-  "first_ts": 1048521600,
-  "last_ts": 1787760000,
+ "sh603073_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 837,
+  "first_ts": 1678896000,
+  "last_ts": 1787673600,
   "conflict_overwrite": false,
-  "updated_ts": 1787799016
+  "updated_ts": 1787808183
  },
- "sh600048_1d": {
-  "source": "tencent",
-  "adjust": "hfq",
-  "bars": 4855,
-  "first_ts": 1154275200,
-  "last_ts": 1787760000,
+ "sh603075_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 716,
+  "first_ts": 1694361600,
+  "last_ts": 1787673600,
   "conflict_overwrite": false,
-  "updated_ts": 1787799031
+  "updated_ts": 1787808194
  },
- "sh600050_1d": {
-  "source": "tencent",
-  "adjust": "hfq",
-  "bars": 5662,
-  "first_ts": 1034092800,
-  "last_ts": 1787760000,
-  "conflict_overwrite": false,
-  "updated_ts": 1787799056
- },
- "sh600051_1d": {
-  "source": "tencent",
-  "adjust": "hfq",
-  "bars": 6914,
-  "first_ts": 860601600,
-  "last_ts": 1787760000,
-  "conflict_overwrite": false,
-  "updated_ts": 1787799092
- },
- "sh600052_1d": {
-  "source": "tencent",
-  "adjust": "hfq",
-  "bars": 6795,
-  "first_ts": 861033600,
-  "last_ts": 1787760000,
-  "conflict_overwrite": false,
-  "updated_ts": 1787799120
- },
- "sh600053_1d": {
-  "source": "tencent",
-  "adjust": "hfq",
-  "bars": 6569,
-  "first_ts": 861292800,
-  "last_ts": 1787760000,
-  "conflict_overwrite": false,
-  "updated_ts": 1787799124
- },
- "sh600054_1d": {
+ "sh603076_1d": {
   "source": "sina",
   "adjust": "raw",
   "bars": 1023,
   "first_ts": 1655049600,
   "last_ts": 1787673600,
   "conflict_overwrite": false,
-  "updated_ts": 1787800867
+  "updated_ts": 1787808208
  },
- "sh600055_1d": {
+ "sh603077_1d": {
   "source": "sina",
   "adjust": "raw",
   "bars": 1023,
   "first_ts": 1655049600,
   "last_ts": 1787673600,
   "conflict_overwrite": false,
-  "updated_ts": 1787800874
+  "updated_ts": 1787808218
  },
- "sh600056_1d": {
-  "source": "sina",
-  "adjust": "raw",
-  "bars": 1023,
-  "first_ts": 1655049600,
-  "last_ts": 1787673600,
-  "conflict_overwrite": false,
-  "updated_ts": 1787800881
- },
- "sh600057_1d": {
-  "source": "sina",
-  "adjust": "raw",
-  "bars": 1023,
-  "first_ts": 1655049600,
-  "last_ts": 1787673600,
-  "conflict_overwrite": false,
-  "updated_ts": 1787800885
- },
- "sh600058_1d": {
-  "source": "sina",
-  "adjust": "raw",
-  "bars": 1023,
-  "first_ts": 1653580800,
-  "last_ts": 1787673600,
-  "conflict_overwrite": false,
-  "updated_ts": 1787800886
- },
- "sh600059_1d": {
-  "source": "sina",
-  "adjust": "raw",
-  "bars": 1023,
-  "first_ts": 1655049600,
-  "last_ts": 1787673600,
-  "conflict_overwrite": false,
-  "updated_ts": 1787800888
- },
- "sh600060_1d": {
-  "source": "sina",
-  "adjust": "raw",
-  "bars": 1023,
-  "first_ts": 1655049600,
-  "last_ts": 1787673600,
-  "conflict_overwrite": false,
-  "updated_ts": 1787800889
- },
- "sh600061_1d": {
-  "source": "sina",
-  "adjust": "raw",
-  "bars": 1023,
-  "first_ts": 1655049600,
-  "last_ts": 1787673600,
-  "conflict_overwrite": false,
-  "updated_ts": 1787800892
- },
- "sh600062_1d": {
-  "source": "sina",
-  "adjust": "raw",
-  "bars": 1023,
-  "first_ts": 1655049600,
-  "last_ts": 1787673600,
-  "conflict_overwrite": false,
-  "updated_ts": 1787800893
- },
- "sh600063_1d": {
-  "source": "sina",
-  "adjust": "raw",
-  "bars": 1023,
-  "first_ts": 1654790400,
-  "last_ts": 1787673600,
-  "conflict_overwrite": false,
-  "updated_ts": 1787800895
- },
- "sh600064_1d": {
-  "source": "sina",
-  "adjust": "raw",
-  "bars": 1023,
-  "first_ts": 1655049600,
-  "last_ts": 1787673600,
-  "conflict_overwrite": false,
-  "updated_ts": 1787800896
- },
- "sh600066_1d": {
-  "source": "sina",
-  "adjust": "raw",
-  "bars": 1023,
-  "first_ts": 1654790400,
-  "last_ts": 1787673600,
-  "conflict_overwrite": false,
-  "updated_ts": 1787800900
- },
- "sh600067_1d": {
-  "source": "sina",
-  "adjust": "raw",
-  "bars": 1023,
-  "first_ts": 1655049600,
-  "last_ts": 1787673600,
-  "conflict_overwrite": false,
-  "updated_ts": 1787800901
- },
- "sh600071_1d": {
-  "source": "sina",
-  "adjust": "raw",
-  "bars": 1023,
-  "first_ts": 1655049600,
-  "last_ts": 1787673600,
-  "conflict_overwrite": false,
-  "updated_ts": 1787800903
- },
- "sh600072_1d": {
-  "source": "sina",
-  "adjust": "raw",
-  "bars": 1023,
-  "first_ts": 1655049600,
-  "last_ts": 1787673600,
-  "conflict_overwrite": false,
-  "updated_ts": 1787800904
- },
- "sh600073_1d": {
-  "source": "sina",
-  "adjust": "raw",
-  "bars": 1023,
-  "first_ts": 1655049600,
-  "last_ts": 1787673600,
-  "conflict_overwrite": false,
-  "updated_ts": 1787800908
- },
- "sh600075_1d": {
-  "source": "sina",
-  "adjust": "raw",
-  "bars": 1023,
-  "first_ts": 1655049600,
-  "last_ts": 1787673600,
-  "conflict_overwrite": false,
-  "updated_ts": 1787800909
- },
- "sh600076_1d": {
-  "source": "sina",
-  "adjust": "raw",
-  "bars": 1023,
-  "first_ts": 1655049600,
-  "last_ts": 1787673600,
-  "conflict_overwrite": false,
-  "updated_ts": 1787800911
- },
- "sh600078_1d": {
-  "source": "sina",
-  "adjust": "raw",
-  "bars": 1023,
-  "first_ts": 1654704000,
-  "last_ts": 1787673600,
-  "conflict_overwrite": false,
-  "updated_ts": 1787800912
- },
- "sh600079_1d": {
-  "source": "sina",
-  "adjust": "raw",
-  "bars": 1023,
-  "first_ts": 1654790400,
-  "last_ts": 1787673600,
-  "conflict_overwrite": false,
-  "updated_ts": 1787800915
- },
- "sh600080_1d": {
-  "source": "sina",
-  "adjust": "raw",
-  "bars": 1023,
-  "first_ts": 1654790400,
-  "last_ts": 1787673600,
-  "conflict_overwrite": false,
-  "updated_ts": 1787800917
- },
- "sh600081_1d": {
-  "source": "sina",
-  "adjust": "raw",
-  "bars": 1023,
-  "first_ts": 1654099200,
-  "last_ts": 1787673600,
-  "conflict_overwrite": false,
-  "updated_ts": 1787800919
- },
- "sh600084_1d": {
-  "source": "tongdaxin",
-  "adjust": "raw",
-  "bars": 6615,
-  "first_ts": 868604400,
-  "last_ts": 1787727600,
-  "conflict_overwrite": false,
-  "updated_ts": 1787800927
- },
- "sh600082_1d": {
-  "source": "tongdaxin",
-  "adjust": "raw",
-  "bars": 6977,
-  "first_ts": 866790000,
-  "last_ts": 1787727600,
-  "conflict_overwrite": false,
-  "updated_ts": 1787800928
- },
- "sh600085_1d": {
-  "source": "tongdaxin",
-  "adjust": "raw",
-  "bars": 7033,
-  "first_ts": 867222000,
-  "last_ts": 1787727600,
-  "conflict_overwrite": false,
-  "updated_ts": 1787800929
- },
- "sh600088_1d": {
-  "source": "tongdaxin",
-  "adjust": "raw",
-  "bars": 6920,
-  "first_ts": 866444400,
-  "last_ts": 1787727600,
-  "conflict_overwrite": false,
-  "updated_ts": 1787800929
- },
- "sh600089_1d": {
-  "source": "tencent",
-  "adjust": "hfq",
-  "bars": 6891,
-  "first_ts": 866563200,
-  "last_ts": 1787760000,
-  "conflict_overwrite": false,
-  "updated_ts": 1787800975
- },
- "sh600095_1d": {
-  "source": "tencent",
-  "adjust": "hfq",
-  "bars": 6935,
-  "first_ts": 868291200,
-  "last_ts": 1787760000,
-  "conflict_overwrite": false,
-  "updated_ts": 1787800976
- },
- "sh600096_1d": {
-  "source": "tencent",
-  "adjust": "hfq",
-  "bars": 6736,
-  "first_ts": 868377600,
-  "last_ts": 1787760000,
-  "conflict_overwrite": false,
-  "updated_ts": 1787800976
- },
- "sh600094_1d": {
-  "source": "tencent",
-  "adjust": "hfq",
-  "bars": 6100,
-  "first_ts": 867859200,
-  "last_ts": 1787760000,
-  "conflict_overwrite": false,
-  "updated_ts": 1787800976
- },
- "sh600097_1d": {
-  "source": "tencent",
-  "adjust": "hfq",
-  "bars": 6822,
-  "first_ts": 866649600,
-  "last_ts": 1787760000,
-  "conflict_overwrite": false,
-  "updated_ts": 1787801021
- },
- "sh600098_1d": {
-  "source": "tencent",
-  "adjust": "hfq",
-  "bars": 6978,
-  "first_ts": 869155200,
-  "last_ts": 1787760000,
-  "conflict_overwrite": false,
-  "updated_ts": 1787801021
- },
- "sh600099_1d": {
-  "source": "tencent",
-  "adjust": "hfq",
-  "bars": 6836,
-  "first_ts": 867945600,
-  "last_ts": 1787760000,
-  "conflict_overwrite": false,
-  "updated_ts": 1787801022
- },
- "sh600100_1d": {
-  "source": "tencent",
-  "adjust": "hfq",
-  "bars": 6839,
-  "first_ts": 867340800,
-  "last_ts": 1787760000,
-  "conflict_overwrite": false,
-  "updated_ts": 1787801023
- },
- "sh600103_1d": {
-  "source": "tencent",
-  "adjust": "hfq",
-  "bars": 6922,
-  "first_ts": 867859200,
-  "last_ts": 1787760000,
-  "conflict_overwrite": false,
-  "updated_ts": 1787801065
- },
- "sh600101_1d": {
-  "source": "tencent",
-  "adjust": "hfq",
-  "bars": 7015,
-  "first_ts": 867340800,
-  "last_ts": 1787760000,
-  "conflict_overwrite": false,
-  "updated_ts": 1787801065
- },
- "sh600104_1d": {
-  "source": "tencent",
-  "adjust": "hfq",
-  "bars": 6857,
-  "first_ts": 880387200,
-  "last_ts": 1787760000,
-  "conflict_overwrite": false,
-  "updated_ts": 1787801066
- },
- "sh600105_1d": {
-  "source": "tencent",
-  "adjust": "hfq",
-  "bars": 6865,
-  "first_ts": 875462400,
-  "last_ts": 1787760000,
-  "conflict_overwrite": false,
-  "updated_ts": 1787801067
- },
- "sh600166_1d": {
-  "source": "sina",
-  "adjust": "raw",
-  "bars": 1023,
-  "first_ts": 1655049600,
-  "last_ts": 1787673600,
-  "conflict_overwrite": false,
-  "updated_ts": 1787801225
- },
- "sh600167_1d": {
-  "source": "sina",
-  "adjust": "raw",
-  "bars": 1023,
-  "first_ts": 1655049600,
-  "last_ts": 1787673600,
-  "conflict_overwrite": false,
-  "updated_ts": 1787801231
- },
- "sh600168_1d": {
-  "source": "sina",
-  "adjust": "raw",
-  "bars": 1023,
-  "first_ts": 1653580800,
-  "last_ts": 1787673600,
-  "conflict_overwrite": false,
-  "updated_ts": 1787801232
- },
- "sh600169_1d": {
-  "source": "sina",
-  "adjust": "raw",
-  "bars": 1023,
-  "first_ts": 1654790400,
-  "last_ts": 1787673600,
-  "conflict_overwrite": false,
-  "updated_ts": 1787801232
- },
- "sh600170_1d": {
-  "source": "sina",
-  "adjust": "raw",
-  "bars": 1023,
-  "first_ts": 1655049600,
-  "last_ts": 1787673600,
-  "conflict_overwrite": false,
-  "updated_ts": 1787801233
- },
- "sh600171_1d": {
-  "source": "sina",
-  "adjust": "raw",
-  "bars": 1023,
-  "first_ts": 1655049600,
-  "last_ts": 1787673600,
-  "conflict_overwrite": false,
-  "updated_ts": 1787801237
- },
- "sh600172_1d": {
+ "sh603078_1d": {
   "source": "sina",
   "adjust": "raw",
   "bars": 1023,
   "first_ts": 1654444800,
   "last_ts": 1787673600,
   "conflict_overwrite": false,
-  "updated_ts": 1787801239
+  "updated_ts": 1787808219
  },
- "sh600173_1d": {
+ "sh603080_1d": {
   "source": "sina",
   "adjust": "raw",
   "bars": 1023,
   "first_ts": 1655049600,
   "last_ts": 1787673600,
   "conflict_overwrite": false,
-  "updated_ts": 1787801239
+  "updated_ts": 1787808220
  },
- "sh600176_1d": {
+ "sh603079_1d": {
   "source": "sina",
   "adjust": "raw",
   "bars": 1023,
   "first_ts": 1655049600,
   "last_ts": 1787673600,
   "conflict_overwrite": false,
-  "updated_ts": 1787801240
+  "updated_ts": 1787808221
  },
- "sh600177_1d": {
+ "sh603082_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 617,
+  "first_ts": 1706544000,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808222
+ },
+ "sh603081_1d": {
   "source": "sina",
   "adjust": "raw",
   "bars": 1023,
   "first_ts": 1655049600,
   "last_ts": 1787673600,
   "conflict_overwrite": false,
-  "updated_ts": 1787801244
+  "updated_ts": 1787808226
  },
- "sh600178_1d": {
+ "sh603085_1d": {
   "source": "sina",
   "adjust": "raw",
   "bars": 1023,
   "first_ts": 1655049600,
   "last_ts": 1787673600,
   "conflict_overwrite": false,
-  "updated_ts": 1787801245
+  "updated_ts": 1787808230
  },
- "sh600179_1d": {
+ "sh603083_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808231
+ },
+ "sh603087_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808234
+ },
+ "sh603086_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808235
+ },
+ "sh603091_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 468,
+  "first_ts": 1726761600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808238
+ },
+ "sh603088_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1654444800,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808239
+ },
+ "sh603089_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808240
+ },
+ "sh603092_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 196,
+  "first_ts": 1762444800,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808243
+ },
+ "sh603090_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808244
+ },
+ "sh603095_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808250
+ },
+ "sh603093_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808250
+ },
+ "sh603096_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808252
+ },
+ "sh603097_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808253
+ },
+ "sh603098_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808260
+ },
+ "sh603099_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808260
+ },
+ "sh603100_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808263
+ },
+ "sh603101_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808263
+ },
+ "sh603102_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808270
+ },
+ "sh603103_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808270
+ },
+ "sh603105_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808273
+ },
+ "sh603107_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 685,
+  "first_ts": 1698768000,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808273
+ },
+ "sh603106_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808274
+ },
+ "sh603108_1d": {
+  "source": "tongdaxin",
+  "adjust": "raw",
+  "bars": 2599,
+  "first_ts": 1432710000,
+  "last_ts": 1787727600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808286
+ },
+ "sh603110_1d": {
+  "source": "tongdaxin",
+  "adjust": "raw",
+  "bars": 2153,
+  "first_ts": 1507878000,
+  "last_ts": 1787727600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808286
+ },
+ "sh603111_1d": {
+  "source": "tongdaxin",
+  "adjust": "raw",
+  "bars": 2743,
+  "first_ts": 1406876400,
+  "last_ts": 1787727600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808287
+ },
+ "sh603109_1d": {
+  "source": "tongdaxin",
+  "adjust": "raw",
+  "bars": 1613,
+  "first_ts": 1577775600,
+  "last_ts": 1787727600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808287
+ },
+ "sh603112_1d": {
+  "source": "tongdaxin",
+  "adjust": "raw",
+  "bars": 1439,
+  "first_ts": 1600326000,
+  "last_ts": 1787727600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808350
+ },
+ "sh603113_1d": {
+  "source": "tongdaxin",
+  "adjust": "raw",
+  "bars": 2259,
+  "first_ts": 1494486000,
+  "last_ts": 1787727600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808351
+ },
+ "sh603115_1d": {
+  "source": "tongdaxin",
+  "adjust": "raw",
+  "bars": 1709,
+  "first_ts": 1565334000,
+  "last_ts": 1787727600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808351
+ },
+ "sh603116_1d": {
+  "source": "tongdaxin",
+  "adjust": "raw",
+  "bars": 2711,
+  "first_ts": 1435561200,
+  "last_ts": 1787727600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808352
+ },
+ "sh603117_1d": {
+  "source": "tongdaxin",
+  "adjust": "raw",
+  "bars": 2698,
+  "first_ts": 1435561200,
+  "last_ts": 1787727600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808399
+ },
+ "sh603118_1d": {
+  "source": "tongdaxin",
+  "adjust": "raw",
+  "bars": 2762,
+  "first_ts": 1424847600,
+  "last_ts": 1787727600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808405
+ },
+ "sh603119_1d": {
+  "source": "tongdaxin",
+  "adjust": "raw",
+  "bars": 745,
+  "first_ts": 1690873200,
+  "last_ts": 1787727600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808406
+ },
+ "sh603120_1d": {
+  "source": "tongdaxin",
+  "adjust": "raw",
+  "bars": 333,
+  "first_ts": 1744786800,
+  "last_ts": 1787727600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808406
+ },
+ "sh603121_1d": {
+  "source": "tongdaxin",
+  "adjust": "raw",
+  "bars": 1839,
+  "first_ts": 1547190000,
+  "last_ts": 1787727600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808416
+ },
+ "sh603122_1d": {
+  "source": "tongdaxin",
+  "adjust": "raw",
+  "bars": 1097,
+  "first_ts": 1644994800,
+  "last_ts": 1787727600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808432
+ },
+ "sh603123_1d": {
+  "source": "tongdaxin",
+  "adjust": "raw",
+  "bars": 3400,
+  "first_ts": 1336028400,
+  "last_ts": 1787727600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808438
+ },
+ "sh603124_1d": {
+  "source": "tongdaxin",
+  "adjust": "raw",
+  "bars": 351,
+  "first_ts": 1742454000,
+  "last_ts": 1787727600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808456
+ },
+ "sh603125_1d": {
+  "source": "tongdaxin",
+  "adjust": "raw",
+  "bars": 821,
+  "first_ts": 1681110000,
+  "last_ts": 1787727600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808466
+ },
+ "sh603126_1d": {
+  "source": "tongdaxin",
+  "adjust": "raw",
+  "bars": 2875,
+  "first_ts": 1406790000,
+  "last_ts": 1787727600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808471
+ },
+ "sh603127_1d": {
+  "source": "tongdaxin",
+  "adjust": "raw",
+  "bars": 2185,
+  "first_ts": 1503644400,
+  "last_ts": 1787727600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808471
+ },
+ "sh603128_1d": {
+  "source": "tongdaxin",
+  "adjust": "raw",
+  "bars": 3347,
+  "first_ts": 1338274800,
+  "last_ts": 1787727600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808476
+ },
+ "sh603129_1d": {
+  "source": "tongdaxin",
+  "adjust": "raw",
+  "bars": 2190,
+  "first_ts": 1503039600,
+  "last_ts": 1787727600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808481
+ },
+ "sh603130_1d": {
+  "source": "tongdaxin",
+  "adjust": "raw",
+  "bars": 915,
+  "first_ts": 1668754800,
+  "last_ts": 1787727600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808528
+ },
+ "sh603131_1d": {
+  "source": "tongdaxin",
+  "adjust": "raw",
+  "bars": 2394,
+  "first_ts": 1465282800,
+  "last_ts": 1787727600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808532
+ },
+ "sh603132_1d": {
+  "source": "tongdaxin",
+  "adjust": "raw",
+  "bars": 1096,
+  "first_ts": 1645513200,
+  "last_ts": 1787727600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808535
+ },
+ "sh603135_1d": {
+  "source": "tongdaxin",
+  "adjust": "raw",
+  "bars": 821,
+  "first_ts": 1681110000,
+  "last_ts": 1787727600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808538
+ },
+ "sh603136_1d": {
+  "source": "tongdaxin",
+  "adjust": "raw",
+  "bars": 2162,
+  "first_ts": 1506495600,
+  "last_ts": 1787727600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808553
+ },
+ "sh603137_1d": {
+  "source": "tongdaxin",
+  "adjust": "raw",
+  "bars": 804,
+  "first_ts": 1681887600,
+  "last_ts": 1787727600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808579
+ },
+ "sh603138_1d": {
+  "source": "tongdaxin",
+  "adjust": "raw",
+  "bars": 2304,
+  "first_ts": 1488783600,
+  "last_ts": 1787727600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808581
+ },
+ "sh603139_1d": {
+  "source": "tongdaxin",
+  "adjust": "raw",
+  "bars": 2270,
+  "first_ts": 1492758000,
+  "last_ts": 1787727600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808585
+ },
+ "sh603150_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808605
+ },
+ "sh603151_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 930,
+  "first_ts": 1666108800,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808605
+ },
+ "sh603153_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 840,
+  "first_ts": 1678636800,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808608
+ },
+ "sh603155_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808639
+ },
+ "sh603156_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808643
+ },
+ "sh603158_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808644
+ },
+ "sh603159_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1654444800,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808644
+ },
+ "sh603160_1d": {
   "source": "sina",
   "adjust": "raw",
   "bars": 1023,
   "first_ts": 1653580800,
   "last_ts": 1787673600,
   "conflict_overwrite": false,
-  "updated_ts": 1787801246
+  "updated_ts": 1787808647
  },
- "sh600180_1d": {
+ "sh603162_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 828,
+  "first_ts": 1680019200,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808647
+ },
+ "sh603163_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 941,
+  "first_ts": 1665590400,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808648
+ },
+ "sh603161_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1652976000,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808650
+ },
+ "sh603165_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808654
+ },
+ "sh603166_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808657
+ },
+ "sh603167_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808662
+ },
+ "sh603168_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808665
+ },
+ "sh603169_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808668
+ },
+ "sh603170_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 999,
+  "first_ts": 1657814400,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808669
+ },
+ "sh603172_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 802,
+  "first_ts": 1683648000,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808670
+ },
+ "sh603173_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 870,
+  "first_ts": 1675008000,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808672
+ },
+ "sh603171_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808673
+ },
+ "sh603175_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 206,
+  "first_ts": 1761235200,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808676
+ },
+ "sh603176_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808684
+ },
+ "sh603177_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808692
+ },
+ "sh603178_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808696
+ },
+ "sh603179_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808699
+ },
+ "sh603182_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 954,
+  "first_ts": 1662652800,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808699
+ },
+ "sh603180_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808699
+ },
+ "sh603181_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808700
+ },
+ "sh603183_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808706
+ },
+ "sh603185_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808707
+ },
+ "sh603186_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808708
+ },
+ "sh603190_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 856,
+  "first_ts": 1676563200,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808711
+ },
+ "sh603187_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808712
+ },
+ "sh603188_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808713
+ },
+ "sh603189_1d": {
   "source": "sina",
   "adjust": "raw",
   "bars": 1023,
   "first_ts": 1654790400,
   "last_ts": 1787673600,
   "conflict_overwrite": false,
-  "updated_ts": 1787801248
+  "updated_ts": 1787808714
  },
- "sh600182_1d": {
+ "sh603193_1d": {
   "source": "sina",
   "adjust": "raw",
-  "bars": 1023,
-  "first_ts": 1654790400,
+  "bars": 696,
+  "first_ts": 1697472000,
   "last_ts": 1787673600,
   "conflict_overwrite": false,
-  "updated_ts": 1787801250
+  "updated_ts": 1787808717
  },
- "sh600183_1d": {
-  "source": "sina",
-  "adjust": "raw",
-  "bars": 1023,
-  "first_ts": 1655049600,
-  "last_ts": 1787673600,
-  "conflict_overwrite": false,
-  "updated_ts": 1787801252
- },
- "sh600184_1d": {
+ "sh603191_1d": {
   "source": "sina",
   "adjust": "raw",
   "bars": 1023,
   "first_ts": 1655049600,
   "last_ts": 1787673600,
   "conflict_overwrite": false,
-  "updated_ts": 1787801253
+  "updated_ts": 1787808720
  },
- "sh600185_1d": {
-  "source": "sina",
-  "adjust": "raw",
-  "bars": 1023,
-  "first_ts": 1654531200,
-  "last_ts": 1787673600,
-  "conflict_overwrite": false,
-  "updated_ts": 1787801254
- },
- "sh600186_1d": {
+ "sh603192_1d": {
   "source": "sina",
   "adjust": "raw",
   "bars": 1023,
   "first_ts": 1655049600,
   "last_ts": 1787673600,
   "conflict_overwrite": false,
-  "updated_ts": 1787801257
+  "updated_ts": 1787808721
  },
- "sh600187_1d": {
+ "sh603194_1d": {
   "source": "sina",
   "adjust": "raw",
-  "bars": 1023,
-  "first_ts": 1654790400,
+  "bars": 406,
+  "first_ts": 1734969600,
   "last_ts": 1787673600,
   "conflict_overwrite": false,
-  "updated_ts": 1787801259
+  "updated_ts": 1787808723
  },
- "sh600188_1d": {
-  "source": "sina",
-  "adjust": "raw",
-  "bars": 1023,
-  "first_ts": 1655049600,
-  "last_ts": 1787673600,
-  "conflict_overwrite": false,
-  "updated_ts": 1787801260
- },
- "sh600189_1d": {
+ "sh603195_1d": {
   "source": "sina",
   "adjust": "raw",
   "bars": 1023,
   "first_ts": 1655049600,
   "last_ts": 1787673600,
   "conflict_overwrite": false,
-  "updated_ts": 1787801261
+  "updated_ts": 1787808727
  },
- "sh600273_1d": {
+ "sh603196_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1652371200,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808730
+ },
+ "sh603197_1d": {
   "source": "sina",
   "adjust": "raw",
   "bars": 1023,
   "first_ts": 1655049600,
   "last_ts": 1787673600,
   "conflict_overwrite": false,
-  "updated_ts": 1787802352
+  "updated_ts": 1787808734
  },
- "sh600269_1d": {
+ "sh603198_1d": {
   "source": "sina",
   "adjust": "raw",
   "bars": 1023,
   "first_ts": 1655049600,
   "last_ts": 1787673600,
   "conflict_overwrite": false,
-  "updated_ts": 1787802353
+  "updated_ts": 1787808734
  },
- "sh600272_1d": {
+ "sh603199_1d": {
   "source": "sina",
   "adjust": "raw",
   "bars": 1023,
   "first_ts": 1655049600,
   "last_ts": 1787673600,
   "conflict_overwrite": false,
-  "updated_ts": 1787802353
+  "updated_ts": 1787808734
  },
- "sh600276_1d": {
+ "sh603201_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 989,
+  "first_ts": 1659024000,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808737
+ },
+ "sh603200_1d": {
   "source": "sina",
   "adjust": "raw",
   "bars": 1023,
   "first_ts": 1655049600,
   "last_ts": 1787673600,
   "conflict_overwrite": false,
-  "updated_ts": 1787802360
+  "updated_ts": 1787808737
  },
- "sh600278_1d": {
+ "sh603202_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 327,
+  "first_ts": 1745424000,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808737
+ },
+ "sh603205_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 439,
+  "first_ts": 1730908800,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808740
+ },
+ "sh603203_1d": {
   "source": "sina",
   "adjust": "raw",
   "bars": 1023,
   "first_ts": 1655049600,
   "last_ts": 1787673600,
   "conflict_overwrite": false,
-  "updated_ts": 1787802360
+  "updated_ts": 1787808740
  },
- "sh600279_1d": {
+ "sh603207_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 485,
+  "first_ts": 1724601600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808744
+ },
+ "sh603206_1d": {
   "source": "sina",
   "adjust": "raw",
   "bars": 1023,
   "first_ts": 1655049600,
   "last_ts": 1787673600,
   "conflict_overwrite": false,
-  "updated_ts": 1787802361
+  "updated_ts": 1787808745
  },
- "sh600280_1d": {
+ "sh603208_1d": {
+  "source": "tongdaxin",
+  "adjust": "raw",
+  "bars": 2320,
+  "first_ts": 1486710000,
+  "last_ts": 1787727600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808756
+ },
+ "sh603209_1d": {
+  "source": "tongdaxin",
+  "adjust": "raw",
+  "bars": 1074,
+  "first_ts": 1648105200,
+  "last_ts": 1787727600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808757
+ },
+ "sh603210_1d": {
+  "source": "tongdaxin",
+  "adjust": "raw",
+  "bars": 338,
+  "first_ts": 1744182000,
+  "last_ts": 1787727600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808761
+ },
+ "sh603211_1d": {
+  "source": "tongdaxin",
+  "adjust": "raw",
+  "bars": 993,
+  "first_ts": 1658732400,
+  "last_ts": 1787727600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808761
+ },
+ "sh603212_1d": {
+  "source": "tongdaxin",
+  "adjust": "raw",
+  "bars": 1534,
+  "first_ts": 1588230000,
+  "last_ts": 1787727600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808770
+ },
+ "sh603213_1d": {
+  "source": "tongdaxin",
+  "adjust": "raw",
+  "bars": 1153,
+  "first_ts": 1636614000,
+  "last_ts": 1787727600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808794
+ },
+ "sh603214_1d": {
+  "source": "tongdaxin",
+  "adjust": "raw",
+  "bars": 2041,
+  "first_ts": 1522393200,
+  "last_ts": 1787727600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808798
+ },
+ "sh603215_1d": {
+  "source": "tongdaxin",
+  "adjust": "raw",
+  "bars": 1098,
+  "first_ts": 1645167600,
+  "last_ts": 1787727600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808801
+ },
+ "sh603216_1d": {
+  "source": "tongdaxin",
+  "adjust": "raw",
+  "bars": 1130,
+  "first_ts": 1639551600,
+  "last_ts": 1787727600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808805
+ },
+ "sh603217_1d": {
+  "source": "tongdaxin",
+  "adjust": "raw",
+  "bars": 1745,
+  "first_ts": 1561014000,
+  "last_ts": 1787727600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808836
+ },
+ "sh603218_1d": {
+  "source": "tongdaxin",
+  "adjust": "raw",
+  "bars": 2346,
+  "first_ts": 1482908400,
+  "last_ts": 1787727600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808860
+ },
+ "sh603219_1d": {
+  "source": "tongdaxin",
+  "adjust": "raw",
+  "bars": 1156,
+  "first_ts": 1637564400,
+  "last_ts": 1787727600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808861
+ },
+ "sh603220_1d": {
+  "source": "tongdaxin",
+  "adjust": "raw",
+  "bars": 1888,
+  "first_ts": 1542265200,
+  "last_ts": 1787727600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808861
+ },
+ "sh603221_1d": {
+  "source": "tongdaxin",
+  "adjust": "raw",
+  "bars": 1553,
+  "first_ts": 1584946800,
+  "last_ts": 1787727600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808869
+ },
+ "sh603222_1d": {
+  "source": "tencent",
+  "adjust": "hfq",
+  "bars": 2747,
+  "first_ts": 1424102400,
+  "last_ts": 1787760000,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808920
+ },
+ "sh603223_1d": {
+  "source": "tencent",
+  "adjust": "hfq",
+  "bars": 2701,
+  "first_ts": 1435593600,
+  "last_ts": 1787760000,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808924
+ },
+ "sh603225_1d": {
+  "source": "tencent",
+  "adjust": "hfq",
+  "bars": 2276,
+  "first_ts": 1492444800,
+  "last_ts": 1787760000,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808928
+ },
+ "sh603226_1d": {
+  "source": "tencent",
+  "adjust": "hfq",
+  "bars": 2231,
+  "first_ts": 1497456000,
+  "last_ts": 1787760000,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808930
+ },
+ "sh603227_1d": {
+  "source": "tencent",
+  "adjust": "hfq",
+  "bars": 2686,
+  "first_ts": 1431619200,
+  "last_ts": 1787760000,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808987
+ },
+ "sh603228_1d": {
+  "source": "tencent",
+  "adjust": "hfq",
+  "bars": 2341,
+  "first_ts": 1483632000,
+  "last_ts": 1787760000,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808991
+ },
+ "sh603229_1d": {
+  "source": "tencent",
+  "adjust": "hfq",
+  "bars": 2262,
+  "first_ts": 1494259200,
+  "last_ts": 1787760000,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808993
+ },
+ "sh603230_1d": {
+  "source": "tencent",
+  "adjust": "hfq",
+  "bars": 1133,
+  "first_ts": 1640275200,
+  "last_ts": 1787760000,
+  "conflict_overwrite": false,
+  "updated_ts": 1787808994
+ },
+ "sh603231_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 653,
+  "first_ts": 1702569600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809051
+ },
+ "sh603232_1d": {
   "source": "sina",
   "adjust": "raw",
   "bars": 1023,
   "first_ts": 1655049600,
   "last_ts": 1787673600,
   "conflict_overwrite": false,
-  "updated_ts": 1787802361
+  "updated_ts": 1787809058
  },
- "sh600281_1d": {
+ "sh603233_1d": {
   "source": "sina",
   "adjust": "raw",
   "bars": 1023,
   "first_ts": 1655049600,
   "last_ts": 1787673600,
   "conflict_overwrite": false,
-  "updated_ts": 1787802367
+  "updated_ts": 1787809067
  },
- "sh600283_1d": {
+ "sh603235_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1002,
+  "first_ts": 1657555200,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809068
+ },
+ "sh603237_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 966,
+  "first_ts": 1661875200,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809074
+ },
+ "sh603236_1d": {
   "source": "sina",
   "adjust": "raw",
   "bars": 1023,
   "first_ts": 1655049600,
   "last_ts": 1787673600,
   "conflict_overwrite": false,
-  "updated_ts": 1787802368
+  "updated_ts": 1787809075
  },
- "sh600284_1d": {
+ "sh603238_1d": {
   "source": "sina",
   "adjust": "raw",
   "bars": 1023,
   "first_ts": 1655049600,
   "last_ts": 1787673600,
   "conflict_overwrite": false,
-  "updated_ts": 1787802368
+  "updated_ts": 1787809083
  },
- "sh600285_1d": {
+ "sh603239_1d": {
   "source": "sina",
   "adjust": "raw",
   "bars": 1023,
   "first_ts": 1655049600,
   "last_ts": 1787673600,
   "conflict_overwrite": false,
-  "updated_ts": 1787802374
+  "updated_ts": 1787809085
  },
- "sh600287_1d": {
+ "sh603248_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 164,
+  "first_ts": 1766419200,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809087
+ },
+ "sh603255_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 975,
+  "first_ts": 1660752000,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809088
+ },
+ "sh603256_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809094
+ },
+ "sh603257_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 339,
+  "first_ts": 1744041600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809098
+ },
+ "sh603258_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809102
+ },
+ "sh603259_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809105
+ },
+ "sh603260_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809107
+ },
+ "sh603262_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 267,
+  "first_ts": 1753200000,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809108
+ },
+ "sh603261_1d": {
   "source": "sina",
   "adjust": "raw",
   "bars": 1023,
   "first_ts": 1654704000,
   "last_ts": 1787673600,
   "conflict_overwrite": false,
-  "updated_ts": 1787802375
+  "updated_ts": 1787809109
  },
- "sh600288_1d": {
+ "sh603266_1d": {
   "source": "sina",
   "adjust": "raw",
   "bars": 1023,
   "first_ts": 1655049600,
   "last_ts": 1787673600,
   "conflict_overwrite": false,
-  "updated_ts": 1787802375
+  "updated_ts": 1787809112
  },
- "sh600289_1d": {
+ "sh603267_1d": {
   "source": "sina",
   "adjust": "raw",
   "bars": 1023,
-  "first_ts": 1648137600,
+  "first_ts": 1655049600,
   "last_ts": 1787673600,
   "conflict_overwrite": false,
-  "updated_ts": 1787802375
+  "updated_ts": 1787809114
  },
- "sh600292_1d": {
+ "sh603270_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 722,
+  "first_ts": 1693497600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809115
+ },
+ "sh603268_1d": {
   "source": "sina",
   "adjust": "raw",
   "bars": 1023,
   "first_ts": 1653580800,
   "last_ts": 1787673600,
   "conflict_overwrite": false,
-  "updated_ts": 1787802381
+  "updated_ts": 1787809116
  },
- "sh600293_1d": {
+ "sh603269_1d": {
   "source": "sina",
   "adjust": "raw",
   "bars": 1023,
   "first_ts": 1655049600,
   "last_ts": 1787673600,
   "conflict_overwrite": false,
-  "updated_ts": 1787802382
+  "updated_ts": 1787809116
  },
- "sh600295_1d": {
+ "sh603271_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 358,
+  "first_ts": 1741622400,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809117
+ },
+ "sh603273_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 692,
+  "first_ts": 1697990400,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809119
+ },
+ "sh603275_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 729,
+  "first_ts": 1692720000,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809121
+ },
+ "sh603272_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1654790400,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809123
+ },
+ "sh603276_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 706,
+  "first_ts": 1695571200,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809126
+ },
+ "sh603277_1d": {
   "source": "sina",
   "adjust": "raw",
   "bars": 1023,
   "first_ts": 1655049600,
   "last_ts": 1787673600,
   "conflict_overwrite": false,
-  "updated_ts": 1787802383
+  "updated_ts": 1787809142
  },
- "sh600298_1d": {
+ "sh603278_1d": {
   "source": "sina",
   "adjust": "raw",
   "bars": 1023,
   "first_ts": 1655049600,
   "last_ts": 1787673600,
   "conflict_overwrite": false,
-  "updated_ts": 1787802383
+  "updated_ts": 1787809149
  },
- "sh600301_1d": {
+ "sh603280_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 923,
+  "first_ts": 1667836800,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809151
+ },
+ "sh603281_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 869,
+  "first_ts": 1675094400,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809151
+ },
+ "sh603282_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 838,
+  "first_ts": 1678809600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809152
+ },
+ "sh603279_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809154
+ },
+ "sh603283_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809163
+ },
+ "sh603284_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 131,
+  "first_ts": 1770652800,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809166
+ },
+ "sh603285_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 521,
+  "first_ts": 1720108800,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809169
+ },
+ "sh603286_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809184
+ },
+ "sh603288_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809187
+ },
+ "sh603291_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 830,
+  "first_ts": 1679846400,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809188
+ },
+ "sh603289_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809190
+ },
+ "sh603293_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 91,
+  "first_ts": 1776268800,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809190
+ },
+ "sh603290_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809192
+ },
+ "sh603296_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 740,
+  "first_ts": 1691424000,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809193
+ },
+ "sh603297_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809199
+ },
+ "sh603298_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809200
+ },
+ "sh603299_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809208
+ },
+ "sh603300_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1654704000,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809209
+ },
+ "sh603301_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809215
+ },
+ "sh603303_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809216
+ },
+ "sh603307_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 857,
+  "first_ts": 1676476800,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809218
+ },
+ "sh603305_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1654012800,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809218
+ },
+ "sh603306_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1653580800,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809218
+ },
+ "sh603310_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 493,
+  "first_ts": 1723564800,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809221
+ },
+ "sh603308_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809223
+ },
+ "sh603309_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809226
+ },
+ "sh603312_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 635,
+  "first_ts": 1704902400,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809229
+ },
+ "sh603311_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1654444800,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809231
+ },
+ "sh603313_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809238
+ },
+ "sh603315_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1654790400,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809242
+ },
+ "sh603316_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809242
+ },
+ "sh603317_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809245
+ },
+ "sh603318_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1654790400,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809249
+ },
+ "sh603319_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809250
+ },
+ "sh603320_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809250
+ },
+ "sh603321_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809252
+ },
+ "sh603325_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 636,
+  "first_ts": 1704816000,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809256
+ },
+ "sh603323_1d": {
   "source": "tongdaxin",
   "adjust": "raw",
-  "bars": 6169,
-  "first_ts": 963385200,
+  "bars": 2367,
+  "first_ts": 1480402800,
   "last_ts": 1787727600,
   "conflict_overwrite": false,
-  "updated_ts": 1787802396
+  "updated_ts": 1787809263
  },
- "sh600302_1d": {
+ "sh603322_1d": {
   "source": "tongdaxin",
   "adjust": "raw",
-  "bars": 6151,
-  "first_ts": 976690800,
+  "bars": 2423,
+  "first_ts": 1469689200,
   "last_ts": 1787727600,
   "conflict_overwrite": false,
-  "updated_ts": 1787802396
+  "updated_ts": 1787809263
  },
- "sh600300_1d": {
+ "sh603324_1d": {
   "source": "tongdaxin",
   "adjust": "raw",
-  "bars": 6248,
-  "first_ts": 962348400,
+  "bars": 1308,
+  "first_ts": 1617778800,
   "last_ts": 1787727600,
   "conflict_overwrite": false,
-  "updated_ts": 1787802397
+  "updated_ts": 1787809263
  },
- "sh600299_1d": {
+ "sh603326_1d": {
   "source": "tongdaxin",
   "adjust": "raw",
-  "bars": 6116,
-  "first_ts": 956214000,
+  "bars": 2234,
+  "first_ts": 1497596400,
   "last_ts": 1787727600,
   "conflict_overwrite": false,
-  "updated_ts": 1787802398
+  "updated_ts": 1787809272
  },
- "sh600303_1d": {
+ "sh603327_1d": {
   "source": "tongdaxin",
   "adjust": "raw",
-  "bars": 6076,
-  "first_ts": 977814000,
+  "bars": 1764,
+  "first_ts": 1558594800,
   "last_ts": 1787727600,
   "conflict_overwrite": false,
-  "updated_ts": 1787802443
+  "updated_ts": 1787809325
  },
- "sh600305_1d": {
+ "sh603328_1d": {
   "source": "tongdaxin",
   "adjust": "raw",
-  "bars": 6139,
-  "first_ts": 981442800,
+  "bars": 2953,
+  "first_ts": 1404198000,
   "last_ts": 1787727600,
   "conflict_overwrite": false,
-  "updated_ts": 1787802445
+  "updated_ts": 1787809350
  },
- "sh600307_1d": {
+ "sh603329_1d": {
   "source": "tongdaxin",
   "adjust": "raw",
-  "bars": 6136,
-  "first_ts": 977295600,
+  "bars": 2094,
+  "first_ts": 1514530800,
   "last_ts": 1787727600,
   "conflict_overwrite": false,
-  "updated_ts": 1787802446
+  "updated_ts": 1787809354
  },
- "sh600308_1d": {
+ "sh603330_1d": {
   "source": "tongdaxin",
   "adjust": "raw",
-  "bars": 6215,
-  "first_ts": 970124400,
+  "bars": 2302,
+  "first_ts": 1486969200,
   "last_ts": 1787727600,
   "conflict_overwrite": false,
-  "updated_ts": 1787802447
+  "updated_ts": 1787809356
  },
- "sh600309_1d": {
+ "sh603331_1d": {
   "source": "tongdaxin",
   "adjust": "raw",
-  "bars": 6021,
-  "first_ts": 978678000,
+  "bars": 2222,
+  "first_ts": 1499238000,
   "last_ts": 1787727600,
   "conflict_overwrite": false,
-  "updated_ts": 1787802491
+  "updated_ts": 1787809375
  },
- "sh600310_1d": {
+ "sh603332_1d": {
   "source": "tongdaxin",
   "adjust": "raw",
-  "bars": 6106,
-  "first_ts": 983343600,
+  "bars": 1845,
+  "first_ts": 1547708400,
   "last_ts": 1787727600,
   "conflict_overwrite": false,
-  "updated_ts": 1787802496
+  "updated_ts": 1787809420
  },
- "sh600312_1d": {
+ "sh603333_1d": {
   "source": "tongdaxin",
   "adjust": "raw",
-  "bars": 6007,
-  "first_ts": 982738800,
+  "bars": 3432,
+  "first_ts": 1336374000,
   "last_ts": 1787727600,
   "conflict_overwrite": false,
-  "updated_ts": 1787802497
+  "updated_ts": 1787809428
  },
- "sh600313_1d": {
+ "sh603334_1d": {
   "source": "tongdaxin",
   "adjust": "raw",
-  "bars": 5427,
-  "first_ts": 979887600,
+  "bars": 198,
+  "first_ts": 1762326000,
   "last_ts": 1787727600,
   "conflict_overwrite": false,
-  "updated_ts": 1787802498
+  "updated_ts": 1787809428
  },
- "sh600315_1d": {
+ "sh603335_1d": {
   "source": "tongdaxin",
   "adjust": "raw",
-  "bars": 5869,
-  "first_ts": 984639600,
+  "bars": 2233,
+  "first_ts": 1497942000,
   "last_ts": 1787727600,
   "conflict_overwrite": false,
-  "updated_ts": 1787802528
+  "updated_ts": 1787809438
  },
- "sh600316_1d": {
+ "sh600107_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1654704000,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809750
+ },
+ "sh600106_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809751
+ },
+ "sh600109_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809751
+ },
+ "sh600108_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809753
+ },
+ "sh600111_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809758
+ },
+ "sh600113_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809760
+ },
+ "sh600110_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1653926400,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809760
+ },
+ "sh600114_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1653580800,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809761
+ },
+ "sh600115_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809765
+ },
+ "sh600117_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1654617600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809768
+ },
+ "sh600118_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809768
+ },
+ "sh600116_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809768
+ },
+ "sh600119_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1654790400,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809772
+ },
+ "sh600121_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809774
+ },
+ "sh600123_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809776
+ },
+ "sh600125_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809779
+ },
+ "sh600126_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809781
+ },
+ "sh600128_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809784
+ },
+ "sh600127_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809786
+ },
+ "sh600129_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809788
+ },
+ "sh600130_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1654704000,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809788
+ },
+ "sh600131_1d": {
   "source": "tongdaxin",
   "adjust": "raw",
-  "bars": 6097,
-  "first_ts": 976863600,
+  "bars": 6779,
+  "first_ts": 891500400,
   "last_ts": 1787727600,
   "conflict_overwrite": false,
-  "updated_ts": 1787802541
+  "updated_ts": 1787809796
  },
- "sh600318_1d": {
+ "sh600132_1d": {
   "source": "tongdaxin",
   "adjust": "raw",
-  "bars": 5621,
-  "first_ts": 976258800,
+  "bars": 6848,
+  "first_ts": 878194800,
   "last_ts": 1787727600,
   "conflict_overwrite": false,
-  "updated_ts": 1787802544
+  "updated_ts": 1787809797
  },
- "sh600319_1d": {
+ "sh600133_1d": {
   "source": "tongdaxin",
   "adjust": "raw",
-  "bars": 5747,
-  "first_ts": 985590000,
+  "bars": 6539,
+  "first_ts": 887266800,
   "last_ts": 1787727600,
   "conflict_overwrite": false,
-  "updated_ts": 1787802545
+  "updated_ts": 1787809799
  },
- "sh600320_1d": {
+ "sh600135_1d": {
   "source": "tongdaxin",
   "adjust": "raw",
-  "bars": 6154,
-  "first_ts": 977382000,
+  "bars": 6841,
+  "first_ts": 885452400,
   "last_ts": 1787727600,
   "conflict_overwrite": false,
-  "updated_ts": 1787802553
+  "updated_ts": 1787809800
+ },
+ "sh600136_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1654704000,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809860
+ },
+ "sh600138_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809864
+ },
+ "sh600137_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809865
+ },
+ "sh600141_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809865
+ },
+ "sh600143_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809867
+ },
+ "sh600148_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809872
+ },
+ "sh600149_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809872
+ },
+ "sh600150_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1653235200,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809872
+ },
+ "sh600151_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809874
+ },
+ "sh600152_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809879
+ },
+ "sh600153_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809879
+ },
+ "sh600155_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809879
+ },
+ "sh600156_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1653580800,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809881
+ },
+ "sh600157_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1653580800,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809885
+ },
+ "sh600158_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809886
+ },
+ "sh600159_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809886
+ },
+ "sh600160_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809889
+ },
+ "sh600162_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809892
+ },
+ "sh600163_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809893
+ },
+ "sh600161_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809894
+ },
+ "sh600165_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1654012800,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787809898
+ },
+ "sh600191_1d": {
+  "source": "tongdaxin",
+  "adjust": "raw",
+  "bars": 6452,
+  "first_ts": 913273200,
+  "last_ts": 1787727600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787810039
+ },
+ "sh600192_1d": {
+  "source": "tongdaxin",
+  "adjust": "raw",
+  "bars": 6646,
+  "first_ts": 914482800,
+  "last_ts": 1787727600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787810042
+ },
+ "sh600195_1d": {
+  "source": "tongdaxin",
+  "adjust": "raw",
+  "bars": 6563,
+  "first_ts": 915692400,
+  "last_ts": 1787727600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787810043
+ },
+ "sh600196_1d": {
+  "source": "tongdaxin",
+  "adjust": "raw",
+  "bars": 6717,
+  "first_ts": 902473200,
+  "last_ts": 1787727600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787810052
+ },
+ "sh600197_1d": {
+  "source": "tongdaxin",
+  "adjust": "raw",
+  "bars": 6478,
+  "first_ts": 937465200,
+  "last_ts": 1787727600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787810104
+ },
+ "sh600198_1d": {
+  "source": "tongdaxin",
+  "adjust": "raw",
+  "bars": 6467,
+  "first_ts": 908953200,
+  "last_ts": 1787727600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787810107
+ },
+ "sh600199_1d": {
+  "source": "tongdaxin",
+  "adjust": "raw",
+  "bars": 6703,
+  "first_ts": 902905200,
+  "last_ts": 1787727600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787810111
+ },
+ "sh600201_1d": {
+  "source": "tongdaxin",
+  "adjust": "raw",
+  "bars": 6601,
+  "first_ts": 916383600,
+  "last_ts": 1787727600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787810112
+ },
+ "sh600202_1d": {
+  "source": "tongdaxin",
+  "adjust": "raw",
+  "bars": 6441,
+  "first_ts": 928393200,
+  "last_ts": 1787727600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787810170
+ },
+ "sh600203_1d": {
+  "source": "tongdaxin",
+  "adjust": "raw",
+  "bars": 6146,
+  "first_ts": 926665200,
+  "last_ts": 1787727600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787810179
+ },
+ "sh600206_1d": {
+  "source": "tongdaxin",
+  "adjust": "raw",
+  "bars": 6516,
+  "first_ts": 921826800,
+  "last_ts": 1787727600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787810180
+ },
+ "sh600207_1d": {
+  "source": "tongdaxin",
+  "adjust": "raw",
+  "bars": 6401,
+  "first_ts": 931935600,
+  "last_ts": 1787727600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787810181
+ },
+ "sh600208_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1653580800,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787810207
+ },
+ "sh600210_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787810215
+ },
+ "sh600211_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787810223
+ },
+ "sh600212_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787810230
+ },
+ "sh600215_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787810231
+ },
+ "sh600216_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787810232
+ },
+ "sh600217_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787810233
+ },
+ "sh600218_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787810237
+ },
+ "sh600219_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787810237
+ },
+ "sh600221_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1654790400,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787810239
+ },
+ "sh600222_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1654444800,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787810240
+ },
+ "sh600223_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787810243
+ },
+ "sh600226_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1654790400,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787810244
+ },
+ "sh600227_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787810245
+ },
+ "sh600228_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1654012800,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787810246
+ },
+ "sh600229_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787810251
+ },
+ "sh600230_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787810252
+ },
+ "sh600231_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787810253
+ },
+ "sh600232_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787810254
+ },
+ "sh600233_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787810258
+ },
+ "sh600234_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1654704000,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787810259
+ },
+ "sh600235_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787810260
+ },
+ "sh600236_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787810260
+ },
+ "sh600237_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787810264
+ },
+ "sh600238_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1654704000,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787810266
+ },
+ "sh600239_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1654704000,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787810267
+ },
+ "sh600241_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1654790400,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787810267
+ },
+ "sh600243_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1654099200,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787810271
+ },
+ "sh600246_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787810273
+ },
+ "sh600248_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787810273
+ },
+ "sh600249_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1654704000,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787810274
+ },
+ "sh600250_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1652976000,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787810277
+ },
+ "sh600251_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787810279
+ },
+ "sh600252_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787810280
+ },
+ "sh600255_1d": {
+  "source": "tongdaxin",
+  "adjust": "raw",
+  "bars": 5889,
+  "first_ts": 974876400,
+  "last_ts": 1787727600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787810287
+ },
+ "sh600256_1d": {
+  "source": "tongdaxin",
+  "adjust": "raw",
+  "bars": 6254,
+  "first_ts": 959324400,
+  "last_ts": 1787727600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787810288
+ },
+ "sh600258_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787810288
+ },
+ "sh600257_1d": {
+  "source": "tongdaxin",
+  "adjust": "raw",
+  "bars": 6115,
+  "first_ts": 960793200,
+  "last_ts": 1787727600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787810292
+ },
+ "sh600259_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787810296
+ },
+ "sh600261_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787810304
+ },
+ "sh600262_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787810312
+ },
+ "sh600265_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1654531200,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787810321
+ },
+ "sh600266_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787810330
+ },
+ "sh600267_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787810338
+ },
+ "sh600268_1d": {
+  "source": "sina",
+  "adjust": "raw",
+  "bars": 1023,
+  "first_ts": 1655049600,
+  "last_ts": 1787673600,
+  "conflict_overwrite": false,
+  "updated_ts": 1787810343
  }
 }
