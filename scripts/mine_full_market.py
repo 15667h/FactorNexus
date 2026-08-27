@@ -479,7 +479,10 @@ def mine_one(symbol: str, tf: str, cfg, ctx: dict) -> dict:
             last_err = ""
             # 机构 D1：腾讯默认后复权（hfq，Qlib 首日归一化后复权同构；
             # 前复权历史价被未来除权改写）；新浪/通达信为不复权（raw）
-            sources = [("tencent", 2, 1.0), ("sina", 2, 2.0), ("tongdaxin", 1, 0.5)]
+            # 通达信 3 次重试：批量并发时服务器限流返回空数组（源内已加空响应
+            # 重连重试，这里再兜底一层）
+            sources = [("tencent", 2, 1.0), ("sina", 2, 2.0),
+                       ("tongdaxin", 3, 0.5)]
             for src_kind, n_try, base_wait in sources:
                 if bars:
                     break
@@ -1282,7 +1285,13 @@ def main() -> None:
             done_cnt += 1
             r = fut.result()
             rows.append(r)
-            completed.append(s)
+            # 断点续跑语义（2026-08-27 修复）：
+            #   确定性状态（ok/none_accepted/too_short/dirty_data/filtered）→ 标记完成，
+            #   下次 --skip-done 跳过；
+            #   临时状态（no_data/error）→ 不标记，下次运行重试
+            #   （数据源风控窗口内失败的正常股票不应被永久跳过）。
+            if r.get("status") not in ("no_data", "error", "dirty_data"):
+                completed.append(s)
             pending_cands.extend(r.get("candidates_out", []) or [])
             with ctx_lock:
                 batch_counter += 1

@@ -7,13 +7,13 @@ from datetime import datetime, timezone, timedelta
 
 from web.data_sources.base import Bar, DataSource, DataSourceUnavailable
 
-# 通达信行情服务器（多个备选）
+# 通达信行情服务器（多个备选；2026-08-27 实测：原 119.147/14.17/59.173 已失效，
+# 新增 115.238.56.198 / 218.75.126.9。连接时随机打散顺序，分散批量限流压力）
 _SERVERS = [
     ("115.238.90.165", 7709),
     ("180.153.18.170", 7709),
-    ("119.147.212.81", 7709),
-    ("14.17.75.71", 7709),
-    ("59.173.18.77", 7709),
+    ("115.238.56.198", 7709),
+    ("218.75.126.9", 7709),
 ]
 
 # 项目周期 -> pytdx category
@@ -120,8 +120,12 @@ class TongdaxinSource(DataSource):
             from pytdx.hq import TdxHq_API
         except ImportError as exc:
             raise DataSourceUnavailable("未安装 pytdx") from exc
+        # 随机打散服务器顺序：批量并发时避免所有线程抢第一台服务器
+        import random
+        servers = list(_SERVERS)
+        random.shuffle(servers)
         api = TdxHq_API()
-        for host, port in _SERVERS:
+        for host, port in servers:
             try:
                 if api.connect(host, port):
                     self._api = api
@@ -170,6 +174,7 @@ class TongdaxinSource(DataSource):
             start = 0
             need = min(max(n, 20), 100000)
             pages = 0
+            empty_retry = 0          # 空响应重试（服务器限流时返回空数组）
             while need > 0 and pages < 60:  # 60 页上限 ≈ 48000 根
                 want = min(need + 2, 800)
                 try:
@@ -180,6 +185,15 @@ class TongdaxinSource(DataSource):
                     self.connect()
                     raw = self._fetch_raw(cat, market, code, start, want, is_index)
                 if not raw:
+                    # 批量并发时通达信服务器会限流返回空数组（0.0s 即返回空），
+                    # 误判为"无数据"会污染整批挖掘。重连换服务器重试 2 次
+                    # （退避 0.5/1.0s，避开限流窗口），仍空才视为真无数据。
+                    if empty_retry < 2:
+                        empty_retry += 1
+                        time.sleep(0.5 * empty_retry)
+                        self._api = None
+                        self.connect()
+                        continue
                     break
                 if _looks_corrupted(raw):
                     # 数据乱码通常意味着接口选错（指数误用股票接口）或代码/市场不匹配。
