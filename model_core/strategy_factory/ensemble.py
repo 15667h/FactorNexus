@@ -32,8 +32,7 @@ import numpy as np
 import pandas as pd
 
 from model_core.strategy_factory.dataset import FactorDataset
-from model_core.strategy_factory.walk_forward import (WalkForwardResult,
-                                                      _train_predict)
+from model_core.strategy_factory.walk_forward import WalkForwardResult
 
 
 # ── 1. 横截面排名平均 ────────────────────────────────────────────────────
@@ -63,7 +62,17 @@ def rank_average(preds: list[pd.DataFrame],
             continue
         r = p.rank(axis=1)                     # 逐日截面排名（NaN→NaN）
         ok = r.notna()
-        rank_sum = rank_sum.add((r * w).fillna(0.0), fill_value=0.0)
+        # M4 修复：每模型秩归一化到 [0,1] 再加权——旧实现平均原始秩（1..N），
+        # 模型间单日覆盖股票数不一致时（A 覆盖 800 只、B 覆盖 400 只），
+        # A 的秩量纲约为 B 的两倍，等权平均后信号天然偏向量纲更大的模型。
+        # numpy 数组计算避免 pandas 索引对齐陷阱；单值日 span=0 → 中性 0。
+        rv = r.values.astype(np.float64)
+        r_min_v = np.nanmin(rv, axis=1, keepdims=True)
+        r_span_v = np.nanmax(rv, axis=1, keepdims=True) - r_min_v
+        rn = np.where(r_span_v > 1e-12,
+                      (rv - r_min_v) / np.maximum(r_span_v, 1e-12), 0.0)
+        rn = pd.DataFrame(rn, index=p.index, columns=p.columns)
+        rank_sum = rank_sum.add((rn * w).fillna(0.0), fill_value=0.0)
         w_sum = w_sum.add(ok.astype(float) * w, fill_value=0.0)
     mask = w_sum > 1e-12
     out[mask] = (rank_sum / w_sum.replace(0.0, np.nan))[mask]
@@ -134,30 +143,60 @@ class _EnsembleRankModel:
         return self
 
     def predict(self, X) -> np.ndarray:
+        """无 ts 上下文时的预测。
+
+        M3 修复：rank_avg 语义是「逐日横截面排名平均」，但模型层无法感知
+        日期轴（X 是扁平样本）——旧实现对全测试集做一次排名，把不同交易日
+        样本混在一起，得到的不是逐日截面排名。此处无 ts 时退化为均值集成并
+        告警；正确的逐日截面排名请走 walk_forward（自动传 ts）或面板层
+        rank_average()。
+        """
         if not self._models:
             raise RuntimeError("先 fit 再 predict")
         X = np.asarray(X)
         preds = [np.asarray(m.predict(X), dtype=np.float64)
                  for m in self._models]
         if self.method == "rank_avg":
-            # 逐模型样本排名 → min-max 归一化 → 加权平均（NaN 样本不参与）
+            import warnings
+            warnings.warn(
+                "_EnsembleRankModel.predict 无 ts 上下文：rank_avg 退化为均值"
+                "集成。逐日截面排名请走 walk_forward（自动传 ts）或面板层 "
+                "rank_average()。",
+                stacklevel=2)
+        return np.nanmean(np.vstack(preds), axis=0)
+
+    def predict_with_ts(self, X, ts) -> np.ndarray:
+        """带样本时间戳的预测：rank_avg 时按 ts 逐日截面排名平均（M3 修复）。
+
+        对每个交易日，取当日全部样本做横截面 min-max 排名 → 各模型加权平均。
+        """
+        if not self._models:
+            raise RuntimeError("先 fit 再 predict")
+        X = np.asarray(X)
+        preds = [np.asarray(m.predict(X), dtype=np.float64)
+                 for m in self._models]
+        if self.method == "rank_avg":
             w = self.weights or [1.0 / len(preds)] * len(preds)
-            out = np.zeros(len(X))
-            cnt = np.zeros(len(X))
-            for p, wi in zip(preds, w):
-                s = pd.Series(p)
-                r = s.rank().values
-                ok = np.isfinite(r)
-                if not ok.any():
-                    continue
-                lo, hi = float(np.nanmin(r)), float(np.nanmax(r))
-                rn = (r - lo) / (hi - lo) if hi > lo else \
-                    np.zeros_like(r)
-                out += wi * np.nan_to_num(rn, nan=0.0)
-                cnt += wi * ok.astype(np.float64)
-            return np.where(cnt > 1e-12, out / np.maximum(cnt, 1e-12),
-                            np.nan)
-        # 均值集成（量纲接近时）
+            ts_arr = np.asarray(ts)
+            out = np.full(len(X), np.nan)
+            for day in np.unique(ts_arr):
+                idx = np.where(ts_arr == day)[0]
+                rank_sum = np.zeros(len(idx))
+                cnt = np.zeros(len(idx))
+                for p, wi in zip(preds, w):
+                    s = pd.Series(p[idx])
+                    r = s.rank().values
+                    ok = np.isfinite(r)
+                    if not ok.any():
+                        continue
+                    lo, hi = float(np.nanmin(r)), float(np.nanmax(r))
+                    rn = (r - lo) / (hi - lo) if hi > lo else \
+                        np.zeros_like(r)
+                    rank_sum += wi * np.nan_to_num(rn, nan=0.0)
+                    cnt += wi * ok.astype(np.float64)
+                out[idx] = np.where(cnt > 1e-12,
+                                    rank_sum / np.maximum(cnt, 1e-12), np.nan)
+            return out
         return np.nanmean(np.vstack(preds), axis=0)
 
 

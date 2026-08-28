@@ -131,19 +131,6 @@ def _ts_corr_10(x: torch.Tensor, y: torch.Tensor) -> torch.Tensor:
 
 # ── v3.0 新增算子 helper ─────────────────────────────────────────────
 
-def _ema(x: torch.Tensor, alpha: float) -> torch.Tensor:
-    """指数加权移动平均（因果）。alpha 越大越关注近期。"""
-    # 用递推实现太慢，用衰减权重卷积近似（窗口=20 足够）
-    w = min(20, x.shape[1])
-    weights = torch.tensor([alpha * (1 - alpha) ** i for i in range(w)],
-                           device=x.device, dtype=x.dtype)
-    weights = weights / weights.sum()
-    pad = torch.zeros(x.shape[0], w - 1, device=x.device, dtype=x.dtype)
-    xp = torch.cat([pad, x], dim=1)
-    return torch.nn.functional.unfold(xp.unsqueeze(1), (1, w)).squeeze(1) * 0  # placeholder
-    # 上面的 unfold 对 1D 不直接 work，改用简单循环近似
-
-
 def _ema_simple(x: torch.Tensor, span: int, exact: bool = False) -> torch.Tensor:
     """指数加权移动平均（因果），span 期。
 

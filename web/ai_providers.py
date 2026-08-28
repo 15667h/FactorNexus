@@ -115,8 +115,10 @@ def _probe_qclaw_gateway(base_url: str, token: str, *, timeout: float = 5.0) -> 
                 if resp.status == 200:
                     return True
         except urllib.error.HTTPError as exc:
+            # S2：401/403 = token 失效/配置过期，视为不可用（旧实现误报"可连通"，
+            # 会用失效 token 继续请求）
             if exc.code in (401, 403):
-                return True
+                return False
         except Exception as exc:
             logger.debug("QClaw probe %s failed: %s", path, exc)
     return False
@@ -365,7 +367,11 @@ def _qclaw_gateway_info() -> tuple[str, int, str] | None:
     token = str((gw.get("auth") or {}).get("token") or "").strip()
     if not token:
         return None
-    port = int(gw.get("port") or 51187)
+    # S3：畸形 port 字符串（如 "8080x"）不再引爆 int()，回退默认 51187
+    try:
+        port = int(str(gw.get("port") or 51187))
+    except (ValueError, TypeError):
+        port = 51187
     host = "127.0.0.1"
     bind = str(gw.get("bind") or "127.0.0.1")
     if bind and bind not in ("0.0.0.0", "loopback"):
@@ -660,17 +666,29 @@ def _decrypt_electron_token() -> str | None:
     return None
 
 
+def _safe_endpoint(url: str) -> bool:
+    """S1：仅允许本地回环或已知可信域名，防止 login token 被发往攻击者地址。"""
+    low = (url or "").strip().lower()
+    if low.startswith(("http://127.0.0.1", "http://localhost",
+                       "https://127.0.0.1", "https://localhost")):
+        return True
+    for host in ("copilot.tencent.com", "workbuddy", "codebuddy"):
+        if host in low:
+            return True
+    return False
+
+
 def _workbuddy_endpoint() -> str:
     for env_name in ("WORKBUDDY_API_ENDPOINT", "WORKBUDDY_API_URL"):
         endpoint = os.environ.get(env_name, "").strip()
-        if endpoint:
+        if endpoint and _safe_endpoint(endpoint):
             return endpoint
     acc_config = os.environ.get("ACC_PRODUCT_CONFIG_V3", "")
     if acc_config:
         try:
             config = json.loads(acc_config)
             endpoint = str(config.get("endpoint") or "").strip()
-            if endpoint:
+            if endpoint and _safe_endpoint(endpoint):
                 return endpoint
         except json.JSONDecodeError:
             pass

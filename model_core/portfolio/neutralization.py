@@ -135,7 +135,7 @@ def build_style_features(symbol: str, df: pd.DataFrame,
 def neutralize_panel(panel: pd.DataFrame, klines: dict[str, pd.DataFrame],
                      industry_map: dict[str, str] | None = None,
                      mcap_proxy: str = "close*volume") -> tuple[pd.DataFrame, dict]:
-    """逐日横截面五因子中性化。
+    """逐日横截面五因子中性化（全因果，防前视）。
 
     Args:
         panel: 因子面板，index=ts，columns=symbol，值为因子值（NaN 允许）。
@@ -153,41 +153,103 @@ def neutralize_panel(panel: pd.DataFrame, klines: dict[str, pd.DataFrame],
     symbols = [c for c in panel.columns]
     industry_map = industry_map or {}
     has_industry = bool(industry_map)
-    # 预计算各标的风格特征（用 K 线末端，滚动窗口内视为近似不变——
-    # 机构日频中性化实践中风格特征用最近值/滚动均值，此处取最新值）
-    styles: dict[str, dict] = {}
+
+    # ── 预取每只股票 K 线并预计算「逐日」风格数组（因果滚动）──────────────
+    # 历史 bug（H2 前视）：旧实现用 K 线末端时点快照（close[-1]/ret20[-1]/
+    # vol20[-1]/turn20[-1]/mcap[-1]）作为面板所有历史日期的风格——早期日期
+    # 被未来才可知的风格信息中性化，系统性高估中性化质量。改为按日因果。
+    # 历史 bug（H11 崩溃）：旧实现用 panel 全部列 symbol 访问 ind_dummy，
+    # 因子宇宙 ≠ K 线宇宙时 KeyError。改为只对「有 K 线且窗口足够」的标的
+    # 参与横截面回归（usable 集合），输出面板保留原列。
+    _eps = 1e-9
+    styles_daily: dict[str, dict] = {}
     for s in symbols:
         df = klines.get(s)
         if df is None or df.empty:
             continue
-        st = build_style_features(s, df, mcap_proxy=mcap_proxy)
-        if st:
-            st["industry"] = industry_map.get(s, "Unknown")
-            styles[s] = st
-    n_stocks = len(styles)
+        close = df["close"].values.astype(np.float64)
+        vol = df["volume"].values.astype(np.float64)
+        if mcap_proxy == "amount" and "amount" in df.columns:
+            amount = df["amount"].values.astype(np.float64)
+        else:
+            amount = close * vol
+        t_arr = df["ts"].values.astype(np.int64)
+        T = len(close)
+        if T < 21:
+            continue
+        ret = np.zeros(T)
+        ret[1:] = close[1:] / (close[:-1] + _eps) - 1.0
+        # 逐日因果风格（t 只用 t 及以前）——向量化：
+        # ret20[t] = close[t]/close[t-20]-1
+        ret20 = np.zeros(T)
+        ret20[20:] = close[20:] / (close[:-20] + _eps) - 1.0
+        # vol20[t] = std(ret[t-19..t])
+        vol20 = np.full(T, np.nan)
+        if T >= 21:
+            vol20[20:] = np.array([
+                float(np.std(ret[t - 19:t + 1])) for t in range(20, T)])
+        # turn20[t] = mean(amount[t-19..t])/mean(amount[t-59..t])-1
+        turn20 = np.zeros(T)
+        for t in range(20, T):
+            a_short = float(np.mean(amount[t - 19:t + 1]))
+            a_long = float(np.mean(amount[t - 59:t + 1])) if t >= 60 \
+                else a_short
+            turn20[t] = a_short / (a_long + _eps) - 1.0
+        # mcap[t] = log(mean(amount[t-4..t]))
+        mcap = np.zeros(T)
+        for t in range(4, T):
+            mcap[t] = float(np.log(np.mean(amount[t - 4:t + 1]) + _eps))
+        styles_daily[s] = {
+            "ts": t_arr, "ret20": ret20, "vol20": vol20,
+            "turn20": turn20, "mcap": mcap,
+            "industry": industry_map.get(s, "Unknown"),
+        }
+    usable = [s for s in symbols if s in styles_daily]
+    n_stocks = len(usable)
     if n_stocks < 10:
         return panel, {"n_days": 0, "n_stocks": n_stocks, "industries": 0,
                        "degraded": True, "r2_mean": 0.0}
+    industries = sorted({styles_daily[s]["industry"] for s in usable})
 
-    industries = sorted({st["industry"] for st in styles.values()})
-    # 行业哑变量设计矩阵（含行业时：行业-1 个哑变量 + 截距；不含：仅截距）
-    ind_dummy: dict[str, list[int]] = {}
-    for s, st in styles.items():
+    def _style_row(s: str, j: int) -> list[float] | None:
+        """该股票截至索引 j 的风格行（j 为 t 前最后一根 ≤ t 的 bar）。"""
+        sd = styles_daily[s]
+        if j < 20 or not np.isfinite(sd["vol20"][j]):
+            return None
         row = [1.0]
         if has_industry and len(industries) > 1:
             base = industries[0]
-            row += [1.0 if st["industry"] == i and st["industry"] != base
-                    else 0.0 for i in industries[1:]]
-        row += [st["mcap"], st["ret20"], st["vol20"], st["turn20"]]
-        ind_dummy[s] = row
-    n_feat = len(ind_dummy[symbols[0]])
-    X = np.array([ind_dummy[s] for s in symbols], dtype=np.float64)  # [N, F]
+            ind = sd["industry"]
+            row += [1.0 if ind == i and ind != base else 0.0
+                    for i in industries[1:]]
+        row += [sd["mcap"][j], sd["ret20"][j], sd["vol20"][j],
+                sd["turn20"][j]]
+        return row
 
     out = panel.copy()
     r2s: list[float] = []
     n_days = 0
     for ts, row in panel.iterrows():
-        y = row.values.astype(np.float64)
+        # 逐标的取截至 ts 的因果风格（searchsorted：≤ ts 的最后一根）。
+        # 单位对齐：K 线 ts 是 epoch 秒；pd.Timestamp.value 是纳秒，
+        # 必须 //1e9 转秒，否则所有日期都会被 searchsorted 推到最后一根。
+        ts_i = int(ts.value // 10**9) if hasattr(ts, "value") else int(ts)
+        rows_X: list[list[float]] = []
+        rows_sym: list[str] = []
+        for s in usable:
+            sd = styles_daily[s]
+            j = int(np.searchsorted(sd["ts"], ts_i, side="right")) - 1
+            if j < 20:
+                continue
+            feat = _style_row(s, j)
+            if feat is None:
+                continue
+            rows_X.append(feat)
+            rows_sym.append(s)
+        if len(rows_X) < 10:
+            continue
+        X = np.array(rows_X, dtype=np.float64)  # [N, F]
+        y = row.reindex(rows_sym).values.astype(np.float64)
         valid = np.isfinite(y) & (np.abs(y) < 1e8)
         if valid.sum() < 10:
             continue
@@ -206,8 +268,10 @@ def neutralize_panel(panel: pd.DataFrame, klines: dict[str, pd.DataFrame],
         sd = float(np.std(resid))
         if sd > 1e-9:
             resid = (resid - resid.mean()) / sd
-        out.loc[ts, [s for s, v in zip(symbols, valid) if v]] = resid
-        out.loc[ts, [s for s, v in zip(symbols, valid) if not v]] = np.nan
+        syms_use = [s for s, v in zip(rows_sym, valid) if v]
+        syms_nan = [s for s, v in zip(rows_sym, valid) if not v]
+        out.loc[ts, syms_use] = resid
+        out.loc[ts, syms_nan] = np.nan
         n_days += 1
     return out, {
         "n_days": n_days, "n_stocks": n_stocks,

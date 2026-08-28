@@ -94,6 +94,17 @@ data/
 !data_pipeline/
 data/cache/
 **/kline_cache/
+
+# ── store 生成数据/元数据（可本地再生，不上传 GitHub）──────────────
+store/kline/
+store/factors/
+store/meta/*.json
+store/meta/*.csv
+store/cache/
+!store/meta/.gitkeep
+
+# ── 运行/拉取日志（*.txt 形式，非 *.log）──────────────────────────
+fetch_all_log.txt
 *.parquet
 *.hcc
 *.hc

@@ -62,8 +62,14 @@ def _optimize_weights(mu: np.ndarray, cov: np.ndarray,
     res = minimize(obj, x0, method="SLSQP", bounds=bounds, constraints=cons,
                    options={"maxiter": 500, "ftol": 1e-12})
     w = np.asarray(res.x, dtype=np.float64)
-    s = float(np.abs(w).sum())
-    return w / s if s > 1e-12 else x0
+    # M10 修复：纯多头（全正）按 Σ|w| 归一化等价于 Σw=1；长空（含负权重）
+    # 时 Σ|w|≠1，按 Σ|w| 归一化会破坏 SLSQP 强制的 Σw=1 约束（净暴露不受控、
+    # 不保证多空中性）。长空直接返回 res.x（已满足 Σw=1）。
+    if long_only:
+        s = float(np.abs(w).sum())
+        return w / s if s > 1e-12 else x0
+    net = float(w.sum())
+    return w / net if abs(net) > 1e-12 else x0
 
 
 def markowitz(returns: np.ndarray, risk_aversion: float = 2.0,
@@ -88,8 +94,15 @@ def risk_parity(returns: np.ndarray | np.ndarray,
     """
     from scipy.optimize import minimize
 
-    cov = _cov_returns(returns) if returns.ndim == 2 else \
-        np.asarray(returns, dtype=np.float64)
+    # M9 修复：docstring 允许直接传协方差矩阵，但旧实现 ndim==2 时必然把
+    # 协方差矩阵当收益矩阵再 np.cov 一次（二次协方差化，结果远离真实协方差）。
+    # 对称方阵视为协方差；否则当作收益矩阵 [T,N] 估计协方差。
+    _arr = np.asarray(returns, dtype=np.float64)
+    if (_arr.ndim == 2 and _arr.shape[0] == _arr.shape[1]
+            and np.allclose(_arr, _arr.T)):
+        cov = _arr
+    else:
+        cov = _cov_returns(_arr)
     n = cov.shape[0]
 
     def obj(w):

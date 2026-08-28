@@ -152,6 +152,7 @@ def barra_risk_model(returns: np.ndarray, weights: np.ndarray,
     # 1) 风格因子收益：F_t = X_t^+ r_t（横截面回归系数）
     F = np.zeros((T, K))
     resid = np.zeros((T, N))
+    computed = np.zeros(T, dtype=bool)   # 真正完成回归的日（M11）
     for t in range(T):
         X = exposures[t]                               # [N, K]
         ok = np.isfinite(X).all(axis=1) & np.isfinite(r[t])
@@ -162,16 +163,18 @@ def barra_risk_model(returns: np.ndarray, weights: np.ndarray,
             beta, *_ = np.linalg.lstsq(Xv, rv, rcond=None)
             F[t] = beta
             resid[t][ok] = rv - Xv @ beta
+            computed[t] = True
         except np.linalg.LinAlgError:
             pass
-    # 2) 收缩协方差（风格）
-    F_ok = F[np.isfinite(F).all(axis=1)]
+    # 2) 收缩协方差（风格）——M11 修复：旧实现用 isfinite 过滤，回归被跳过日
+    #    F=0 是有限值会被误纳入，稀释/扭曲协方差；改用 computed 掩码。
+    F_ok = F[computed]
     if len(F_ok) < 20:
         return {"total_vol": 0.0, "style_vol": 0.0, "idio_vol": 0.0,
                 "r2": 0.0, "style_corr": np.zeros((K, K))}
     cov_f = ledoit_wolf_shrinkage(F_ok)
-    # 3) 特质风险（残差方差）
-    var_eps = np.var(resid, axis=0) + 1e-12
+    # 3) 特质风险（残差方差）——同样只用真正回归的日
+    var_eps = np.var(resid[computed], axis=0) + 1e-12
     # 4) 组合平均权重
     w_mean = np.nanmean(w, axis=0)
     w_mean = w_mean / (np.abs(w_mean).sum() + 1e-12)

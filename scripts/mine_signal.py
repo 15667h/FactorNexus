@@ -74,12 +74,13 @@ def _model_factories(models: list[str], trees: int, lr: float,
 def _run_walk_forward(ds, factories: dict, args) -> dict[str, object]:
     """M2 滚动训练：每个模型独立 walk-forward → OOS 预测。"""
     window = None if args.window <= 0 else args.window
+    gap = None if args.gap <= 0 else args.gap  # 0=自动取 horizon（防泄漏）
     results: dict[str, object] = {}
     for name, factory in factories.items():
         print(f"\n  ── 模型 [{name}] walk-forward 滚动训练 ──")
         res = walk_forward_fit_predict(
             ds, model_factory=factory, step=args.step, window=window,
-            gap=args.gap)
+            gap=gap)
         results[name] = res
         print(f"     折数={res.n_folds} OOS 天数={res.oos_days} "
               f"覆盖率={res.coverage:.1%}")
@@ -176,13 +177,20 @@ def main() -> None:
     ap.add_argument("--bars", type=int, default=0, help="K线窗口（0=全历史）")
     ap.add_argument("--step", type=int, default=60, help="walk-forward 每折长度")
     ap.add_argument("--window", type=int, default=240, help="训练窗口（0=expanding）")
-    ap.add_argument("--gap", type=int, default=5, help="训练/预测间隔（防泄漏）")
+    ap.add_argument("--gap", type=int, default=0,
+                    help="训练/预测间隔（0=自动取预测周期 horizon，防标签泄漏；"
+                         "建议不要小于 horizon）")
     ap.add_argument("--trees", type=int, default=300, help="LightGBM 树数")
     ap.add_argument("--lr", type=float, default=0.05, help="学习率")
     ap.add_argument("--models", default="lgbm,ensemble",
                     help="模型池（逗号分隔: lgbm,mlp,s4,gbdt,ensemble；"
                          "ensemble=选定模型排名平均集成）")
     ap.add_argument("--nn-epochs", type=int, default=12, help="MLP/S4 训练轮数")
+    ap.add_argument("--top-factors", type=int, default=0,
+                    help="每股票日线因子 Top-K 筛选（0=全部；机构做法：大因子库"
+                         "分层，只留最强 K 个入模型，控训练时长与过拟合）")
+    ap.add_argument("--no-cache", action="store_true",
+                    help="禁用数据集缓存（强制重建 M1 数据层）")
     ap.add_argument("--device", default="auto", choices=["auto", "cuda", "cpu"],
                     help="NN 设备")
     ap.add_argument("--ensemble-method", default="rank_avg",
@@ -193,9 +201,9 @@ def main() -> None:
     ap.add_argument("--portfolio", action="store_true", help="接入组合层")
     ap.add_argument("--n-top", type=int, default=5, help="组合规模（多空各 N 只）")
     ap.add_argument("--long-only", action="store_true", help="纯多头（默认多空）")
-    ap.add_argument("--rebalance", type=int, default=0,
-                    help="调仓持有期（交易日；0=每日调仓，建议=horizon 匹配"
-                         "预测周期降换手）")
+    ap.add_argument("--rebalance", type=int, default=5,
+                    help="调仓持有期（交易日；默认 5=匹配 horizon，弱信号每日调仓"
+                         "换手成本会吞噬 alpha；0=每日调仓）")
     ap.add_argument("--optimizer", default="equal",
                     choices=["equal", "markowitz", "risk_parity",
                              "black_litterman"],
@@ -212,11 +220,22 @@ def main() -> None:
     print("  FactorNexus · 策略工厂（P24 M1→M6 全链路）")
     print("═" * 62)
 
-    # ── M1 数据层 ────────────────────────────────────────────────────
-    ds = build_dataset(args.store_dir, horizon=args.horizon, bars=args.bars)
+    # ── M1 数据层（带缓存：因子库指纹失效，反复实验秒级起跑）──────────
+    # 特征选择：高频共享列 + 每股票日线因子 Top-K（机构"大因子库+分层筛选"）
+    top_k = getattr(args, "top_factors", 0)
+    if getattr(args, "no_cache", False):
+        ds = build_dataset(args.store_dir, horizon=args.horizon,
+                           bars=args.bars,
+                           top_factors_per_stock=top_k)
+    else:
+        from model_core.strategy_factory.dataset import build_dataset_cached
+        ds = build_dataset_cached(args.store_dir, horizon=args.horizon,
+                                  bars=args.bars,
+                                  top_factors_per_stock=top_k)
     print(f"[M1 数据] 样本={ds.n_samples} 特征={len(ds.feature_names)} "
           f"股票={ds.meta['n_symbols']} 因子={ds.meta['n_factors']} "
-          f"horizon={ds.meta['horizon']}")
+          f"horizon={ds.meta['horizon']}" +
+          (f" Top-K={top_k}" if top_k else ""))
     if ds.n_samples < 200:
         print("[错误] 样本过少——先运行 mine_full_market.py 积累因子库")
         sys.exit(2)
@@ -269,7 +288,7 @@ def main() -> None:
                     seed_f, n_models=3),
                 step=args.step,
                 window=None if args.window <= 0 else args.window,
-                gap=args.gap)
+                gap=None if args.gap <= 0 else args.gap)
             results["ensemble"] = res
             ens_pred = res.pred
         else:
@@ -304,7 +323,7 @@ def main() -> None:
                         seed_f, n_models=3),
                     step=args.step,
                     window=None if args.window <= 0 else args.window,
-                    gap=args.gap)
+                    gap=None if args.gap <= 0 else args.gap)
                 results["ensemble"] = res
                 ens_pred = res.pred
             else:
@@ -318,8 +337,10 @@ def main() -> None:
         print("      stacking：时间分段两层（第一层 base → meta 岭回归）")
         from sklearn.linear_model import Ridge
         meta_factory = lambda: Ridge(alpha=1.0)
-        st = stacking_fit_predict(ds, [factories[k] for k in base_models],
-                                  meta_factory, split_frac=0.7, gap=args.gap)
+        st = stacking_fit_predict(
+            ds, [factories[k] for k in base_models],
+            meta_factory, split_frac=0.7,
+            gap=None if args.gap <= 0 else args.gap)
         results["stacking"] = st
         print(f"      → stacking OOS：{st.pred.shape[0]} 日 × "
               f"{st.pred.shape[1]} 股（{st.n_folds} 折）")

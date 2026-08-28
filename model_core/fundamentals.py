@@ -17,7 +17,7 @@ model_core/fundamentals.py — 基本面数据管线（P18）
 用法：
     from model_core.fundamentals import fetch_fundamentals, build_fundamental_factors
     data = fetch_fundamentals(["sh600519", "sz000001"])
-    factors = build_fundamental_factors(data, close_price_map)
+    factors = build_fundamental_factors(data)
 """
 from __future__ import annotations
 
@@ -162,18 +162,14 @@ def fetch_fundamentals(symbols: list[str], store_dir: str | Path = "store",
 
 # ── 基本面因子构建 ─────────────────────────────────────────────────────────
 
-def build_fundamental_factors(data: dict[str, dict],
-                              close_map: dict[str, float],
-                              n: int = 1) -> dict[str, np.ndarray]:
+def build_fundamental_factors(data: dict[str, dict]) -> dict[str, np.ndarray]:
     """从基本面快照构建因子序列（估值/盈利/成长/质量）。
 
     Args:
         data: fetch_fundamentals 输出 {symbol: {字段}}。
-        close_map: {symbol: 最新收盘价}（用于 EP/BP 等价格类估值）。
-        n: 序列长度（单点值广播为常数序列，供挖掘/回测对齐）。
 
     Returns:
-        {因子名: np.ndarray[n] 或标量}。因子定义：
+        {因子名: np.ndarray[n_stocks]}。因子定义：
           ep        = 1/PE（盈利收益率，估值越低越好 → 越高越便宜）
           bp        = 1/PB（账面市值比，价值因子）
           roe       = 加权 ROE（盈利质量）
@@ -239,8 +235,18 @@ def save_fundamental_factors(data: dict[str, dict],
         n = len(ts)
         for i, name in enumerate(names):
             v = rec.get(field_map[name], np.nan)
-            if v is None or not np.isfinite(v):
+            try:
+                v = float(v)
+            except (TypeError, ValueError):
                 continue
+            if not np.isfinite(v):
+                continue
+            # H6 修复：ep/bp 因子语义 = 1/PE、1/PB（估值越低越好 → 因子越高越便宜）。
+            # 历史 bug：直接存原始 PE/PB，名为 ep/bp 实为 PE/PB，方向互为倒数。
+            if name in ("ep", "bp"):
+                if v <= 0:
+                    continue  # PE/PB 非正无法取倒数
+                v = 1.0 / v
             factor = np.full(n, float(v))
             formula = [20000 + i]  # 基本面因子编码（>=20000）
             fdf = pd.DataFrame({"ts": ts, "factor": factor})

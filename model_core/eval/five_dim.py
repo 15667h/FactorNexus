@@ -147,7 +147,9 @@ def five_dim_evaluate(
     rng = np.random.default_rng(0)
     ics_pert = []
     for _ in range(n_perturb):
-        keep = rng.choice(n, size=int(n * 0.8), replace=False)
+        # M16 修复：keep 须保持时间顺序——_seq_ic 是滚动因果窗口相关，
+        # 乱序抽样会把相邻点打乱使滚动相关无意义。sort 保留时序。
+        keep = np.sort(rng.choice(n, size=int(n * 0.8), replace=False))
         ics_pert.append(_seq_ic(f[keep], r[keep]).mean())
     pert_std = np.std(ics_pert) if ics_pert else 0.0
     pert_mean = abs(np.mean(ics_pert)) + _EPS

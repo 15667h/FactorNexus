@@ -50,6 +50,22 @@ def _ema(x: np.ndarray, span: int) -> np.ndarray:
     return out
 
 
+def _linear_slope(x: np.ndarray, w: int) -> np.ndarray:
+    """w 期线性回归斜率（因果，t 只用 t 及以前；warm-up 置 0）。"""
+    T = len(x)
+    if T < w or w < 2:
+        return np.zeros(T)
+    tidx = np.arange(w, dtype=np.float64)
+    tx = tidx - tidx.mean()
+    denom = (tx ** 2).sum() + 1e-9
+    wnd = _roll(x, w)                       # [T-w+1, w]
+    xm = wnd.mean(axis=1, keepdims=True)
+    slopes = ((wnd - xm) * tx).sum(axis=1) / denom
+    out = np.zeros(T)
+    out[w - 1:] = slopes
+    return out
+
+
 def _rsi(close: np.ndarray, w: int = 14) -> np.ndarray:
     diff = np.diff(close, prepend=close[0])
     gains = np.maximum(diff, 0.0)
@@ -111,9 +127,20 @@ def build_indicators(df: pd.DataFrame) -> dict[str, np.ndarray]:
     ind["boll_pos"] = np.clip((close - (ma20 - 2 * std20)) / (4 * std20 + eps), 0, 1)
     ind["boll_width"] = (4 * std20) / (ma20 + eps)
     obv = np.cumsum(np.sign(ret) * vol)
-    ind["obv_slope"] = _roll_full(obv, 20, fill=0.0, agg="std")
-    mf = ((close - low) - (high - close)) / (high - low + eps) * vol
-    ind["mfi14"] = _roll_full(mf, 14)
+    # M24 修复：obv_slope 应为 OBV 的 w 期线性回归斜率（原实现为滚动 std）。
+    ind["obv_slope"] = _linear_slope(obv, 20)
+    # M22 修复：mfi14 应为资金流量指标 MFI（正资金流/负资金流比值），
+    # 原实现是"资金流强度均值"，与 features.py 的 _mfi 定义矛盾。
+    typical = (high + low + close) / 3.0
+    mf_flow = typical * vol
+    pc = np.concatenate([[typical[0]], typical[:-1]])  # 前收盘（因果）
+    pos_mf = np.where(typical > pc, mf_flow, 0.0)
+    neg_mf = np.where(typical < pc, mf_flow, 0.0)
+    pos_sum = _roll_full(pos_mf, 14) * 14
+    neg_sum = _roll_full(neg_mf, 14) * 14
+    mfr = pos_sum / (neg_sum + eps)
+    mfi = 100.0 - (100.0 / (1.0 + mfr))
+    ind["mfi14"] = (mfi - 50.0) / 50.0
 
     # 反转类
     hh14 = _roll_full(high, 14, agg="max")
@@ -134,10 +161,27 @@ def build_indicators(df: pd.DataFrame) -> dict[str, np.ndarray]:
     ll50 = _roll_full(low, 50, fill=close.min())
     ind["price_pos_50"] = np.clip((close - ll50) / (hh50 - ll50 + eps), 0, 1)
     trix = _ema(_ema(_ema(close, 15), 15), 15)
-    ind["trix_15"] = np.gradient(trix) / (trix + eps)
+    # 后向差分（因果：t 只用 t 及以前）。
+    # 历史 bug：np.gradient 默认中心差分 gradient[i]=(trix[i+1]-trix[i-1])/2，
+    # t 时刻用到了 t+1 未来值 → TRIX 因子前视泄漏、单品种回测虚高。
+    # 与 features.py 的 _trix（后向差分）保持一致。
+    trix_diff = np.concatenate([[0.0], trix[1:] - trix[:-1]])
+    ind["trix_15"] = trix_diff / (trix + eps)
     ppo = (ema12 - ema26) / (ema26 + eps)
     ind["ppo"] = ppo
-    ind["ult_osc"] = _roll_full(close - low, 28) / (_roll_full(high - low, 28) + eps)
+    # M23 修复：ult_osc 应为 3 周期(7/14/28)加权买压 Ultimate Oscillator，
+    # 原实现是 28 期 (C-L)/(H-L) 位置比，与 features.py 的 _ult_osc 定义矛盾。
+    pc_uo = np.concatenate([[close[0]], close[:-1]])   # 前收盘（因果）
+    tl = np.minimum(low, pc_uo)
+    th = np.maximum(high, pc_uo)
+    bp_uo = close - tl                                  # buying pressure
+    tr_uo = th - tl                                     # true range
+
+    def _uo_avg(w: int) -> np.ndarray:
+        return _roll_full(bp_uo, w) / (_roll_full(tr_uo, w) + eps)
+
+    uo = (4.0 * _uo_avg(7) + 2.0 * _uo_avg(14) + _uo_avg(28)) / 7.0
+    ind["ult_osc"] = np.clip(uo * 2.0 - 1.0, -1.0, 1.0)
 
     # 微观结构（华泰实证核心；无笔数数据时用近似，仅用于比例特征）
     num_trades = vol / 100.0  # 手数/100 视为笔数量级近似

@@ -20,13 +20,15 @@ model_core/strategy_factory/dataset.py — M1 数据层
 """
 from __future__ import annotations
 
+import json
 from dataclasses import dataclass, field
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
 
 from data_pipeline.store.kline_store import FactorStore, KlineStore
-from data_pipeline.quality import clean_series
+from data_pipeline.quality import clean_series, mask_jump_returns
 
 
 @dataclass
@@ -76,14 +78,23 @@ def _causal_style_features(close: np.ndarray, vol: np.ndarray,
 
 
 def build_dataset(store_dir: str = "store", horizon: int = 5,
-                  bars: int = 0, min_bars: int = 60) -> FactorDataset:
+                  bars: int = 0,
+                  top_factors_per_stock: int = 0) -> FactorDataset:
     """从因子库构建训练数据集（全因果）。
+
+    特征选择（机构标准，2026-08-28 新增）：
+      - 高频因子（kind=highfreq）聚合为**共享特征列**（hf_xxx，全股票共用，
+        Qlib 横截面特征式）——1407 个 per-symbol 高频列 → 14 个共享列；
+      - 日线因子保持 per-symbol 列，可按认证 RankIC 做 **Top-K 筛选**
+        （top_factors_per_stock>0 时每股票只保留最强 K 个）；
+      - 理由：特征列数决定 LGBM 训练时间与过拟合风险——机构是"大因子库 +
+        分层筛选"，不是"挖多少用多少"。
 
     Args:
         store_dir: 存储根目录（因子库 + K 线库）。
         horizon: 标签预测周期（未来 H 日收益）。
         bars: K 线窗口（0=全历史）。
-        min_bars: 单股票最少有效样本数。
+        top_factors_per_stock: 每股票日线因子 Top-K 筛选（0=全部；高频共享列不参与）。
 
     Returns:
         FactorDataset：X 列 = {因子列...} ∪ {ret20, vol20}，
@@ -92,37 +103,77 @@ def build_dataset(store_dir: str = "store", horizon: int = 5,
     store, kstore = FactorStore(store_dir), KlineStore(store_dir)
     factors = store.list_factors()
 
-    # ── 1. 按股票收集因子值（列名 = 因子 hash 前缀，唯一）────────────
-    # 因子文件两种格式：
-    #   a) 含 ts 列（mine_high_freq / fundamentals 等新管线）
-    #   b) 仅 factor 列，行序对齐 K 线尾部（mine_full_market 入库格式）
-    factor_map: dict[str, dict[int, dict[str, float]]] = {}
-    factor_cols: list[str] = []
+    # ── 1. 按股票收集因子值（特征选择 + 列名设计）────────────────────
+    # 列名规则：
+    #   高频因子 → 共享列 "hf_{feature}"（全股票共用，Qlib 横截面特征式）
+    #   日线因子 → per-symbol 列 "{symbol}_{hash[:10]}"
+    # 认证强度：日线在 report.meta，高频在 report 顶层（双路径读取）
+    per_sym: dict[str, list] = {}
     for f in factors:
         sym = f["symbol"]
+        rep = f.get("report") or {}
+        inner = rep.get("meta") or {}
+        kind = rep.get("kind", "")
         fdf = store.load(sym, f["hash"])
         if fdf is None or "factor" not in fdf.columns or fdf.empty:
             continue
-        col = f"{sym}_{f['hash'][:10]}"   # 特征列名（含股票前缀，避免同名冲突）
-        if col not in factor_cols:
-            factor_cols.append(col)
-        bucket = factor_map.setdefault(sym, {})
-        vals = fdf["factor"].values.astype(np.float64)
-        if "ts" in fdf.columns:
-            ts_arr = fdf["ts"].values.astype(np.int64)
-            for t, v in zip(ts_arr, vals):
-                if np.isfinite(v):
-                    bucket.setdefault(int(t), {})[col] = float(v)
-        else:
-            # 行序对齐 K 线尾部：factor[i] ↔ kline 尾部第 i 根
-            kdf0 = kstore.load(sym, "1d")
-            if kdf0.empty:
+        if kind == "highfreq":
+            feat = rep.get("feature") or ""
+            if not feat:
                 continue
-            n = min(len(vals), len(kdf0))
-            ts_tail = kdf0["ts"].values.astype(np.int64)[-n:]
-            for t, v in zip(ts_tail, vals[-n:]):
-                if np.isfinite(v):
-                    bucket.setdefault(int(t), {})[col] = float(v)
+            # feature 名已带 hf_ 前缀（如 hf_morning_ratio），直接作共享列
+            col = feat
+        else:
+            col = f"{sym}_{f['hash'][:10]}"
+        rankic = float(inner.get("cert_rankic",
+                                 rep.get("cert_rankic", 0.0)))
+        per_sym.setdefault(sym, []).append((col, rankic, fdf))
+
+    factor_map: dict[str, dict[int, dict[str, float]]] = {}
+    factor_cols: list[str] = []
+    # M6 修复：每只股票 K 线在收集因子前先「截断 + 清洗」并缓存，因子对齐
+    # （无 ts 日线因子按行序对齐）与样本行索引使用同一份清洗后 K 线，消除
+    # 清洗/截断导致的因子-交易日错位（历史 bug：因子对齐未清洗 kdf0 尾部，
+    # 样本行却用清洗后 kdf 的 t_idx，清洗删行后整体平移）。jump_dates 一并
+    # 缓存供 M7 标签掩码使用。
+    kdf_cache: dict[str, tuple[pd.DataFrame, set[int]]] = {}
+    for sym, cands in per_sym.items():
+        # 高频共享列全保留；日线 per-symbol 列按 |认证 RankIC| Top-K
+        hf = [c for c in cands if c[0].startswith("hf_")]
+        dl = [c for c in cands if not c[0].startswith("hf_")]
+        dl.sort(key=lambda c: -abs(c[1]))
+        if top_factors_per_stock > 0:
+            dl = dl[:top_factors_per_stock]
+        keep = hf + dl
+        if not keep:
+            continue
+        bucket = factor_map.setdefault(sym, {})
+        kdf_raw = kstore.load(sym, "1d")
+        if kdf_raw.empty:
+            continue
+        if bars > 0 and len(kdf_raw) > bars:
+            kdf_raw = kdf_raw.iloc[-bars:]
+        kdf, jump_dates = clean_series(kdf_raw)
+        if kdf.empty:
+            continue
+        kdf_cache[sym] = (kdf, jump_dates)
+        ts_clean = kdf["ts"].values.astype(np.int64)
+        for col, _rankic, fdf in keep:
+            if col not in factor_cols:
+                factor_cols.append(col)
+            vals = fdf["factor"].values.astype(np.float64)
+            if "ts" in fdf.columns:
+                ts_arr = fdf["ts"].values.astype(np.int64)
+                for t, v in zip(ts_arr, vals):
+                    if np.isfinite(v):
+                        bucket.setdefault(int(t), {})[col] = float(v)
+            else:
+                # 行序对齐清洗后 K 线尾部：factor[i] ↔ 清洗后 K 线尾部第 i 根
+                n = min(len(vals), len(ts_clean))
+                ts_tail = ts_clean[-n:]
+                for t, v in zip(ts_tail, vals[-n:]):
+                    if np.isfinite(v):
+                        bucket.setdefault(int(t), {})[col] = float(v)
 
     # ── 2. K 线清洗 + 风格特征 + 标签 ────────────────────────────────
     rows_x: list[np.ndarray] = []
@@ -137,14 +188,9 @@ def build_dataset(store_dir: str = "store", horizon: int = 5,
     for sym, bucket in factor_map.items():
         if not bucket:
             continue
-        kdf = kstore.load(sym, "1d")
-        if kdf.empty:
+        if sym not in kdf_cache:
             continue
-        if bars > 0 and len(kdf) > bars:
-            kdf = kdf.iloc[-bars:]
-        kdf, _ = clean_series(kdf)        # 清洗（未来戳/重复/0价格）
-        if kdf.empty:
-            continue
+        kdf, jump_dates = kdf_cache[sym]   # 与因子对齐同一份清洗后 K 线（M6）
         close = kdf["close"].values.astype(np.float64)
         vol = kdf["volume"].values.astype(np.float64)
         t_arr = kdf["ts"].values.astype(np.int64)
@@ -161,6 +207,12 @@ def build_dataset(store_dir: str = "store", horizon: int = 5,
         label = np.full(len(close), np.nan)
         if len(close) > horizon:
             label[:-horizon] = close[horizon:] / close[:-horizon] - 1.0
+        # M7 修复：跳变日收益标签置 0（clean_series 返回的 jump_dates 之前被
+        # 丢弃，复权跳变/停牌起复产生的 ±数百收益会作为巨大离群点主导损失）。
+        label = mask_jump_returns(label, t_arr, jump_dates)
+        if len(close) > horizon:
+            # 尾部无未来收益的 NaN 保持 NaN（避免 mask 把尾部伪 0 当真实样本）
+            label[-horizon:] = np.nan
         comp = comp_map.get(sym)
         for t, fdict in bucket.items():
             j = t_idx.get(int(t))
@@ -245,3 +297,83 @@ def _stock_composite(factor_map: dict, factor_cols: list[str],
         out[sym] = {dates[i]: comp[i] for i in range(len(dates))
                     if np.isfinite(comp[i])}
     return out
+
+
+def _dataset_fingerprint(store_dir: str, horizon: int,
+                         bars: int, top_factors_per_stock: int) -> str:
+    """数据集指纹：因子 hash 集合 + 每股票 K 线 (长度, 末 ts) + 筛选参数。
+
+    任一因子入库/删除、K 线更新或 Top-K 参数变化 → 指纹变化 → 缓存失效。
+    """
+    import hashlib
+    store, kstore = FactorStore(store_dir), KlineStore(store_dir)
+    factors = sorted((f["symbol"], f["hash"]) for f in store.list_factors())
+    kl = []
+    for sym in sorted({s for s, _ in factors}):
+        kdf = kstore.load(sym, "1d")
+        if not kdf.empty:
+            kl.append((sym, len(kdf), int(kdf["ts"].iloc[-1])))
+    raw = repr((horizon, bars, top_factors_per_stock, factors, kl))
+    return hashlib.sha1(raw.encode("utf-8")).hexdigest()[:16]
+
+
+def build_dataset_cached(store_dir: str = "store", horizon: int = 5,
+                         bars: int = 0,
+                         top_factors_per_stock: int = 0,
+                         cache_dir: str | None = None,
+                         verbose: bool = True) -> FactorDataset:
+    """带缓存的 build_dataset（指纹失效）。
+
+    因子库膨胀后 build_dataset 需数十分钟（_stock_composite 全因子重算）；
+    本函数以 (因子集合 + K 线状态 + 筛选参数) 指纹缓存数据集，指纹不变时
+    秒级加载，供策略工厂反复实验使用。
+
+    Args:
+        top_factors_per_stock: 每股票日线因子 Top-K 筛选（0=全部）。
+        cache_dir: 缓存目录（默认 {store_dir}/cache/dataset）。
+        verbose: 打印缓存命中/重建信息。
+    """
+    import time as _time
+    cache_dir = cache_dir or str(Path(store_dir) / "cache" / "dataset")
+    cdir = Path(cache_dir)
+    cdir.mkdir(parents=True, exist_ok=True)
+    fp = _dataset_fingerprint(store_dir, horizon, bars,
+                              top_factors_per_stock)
+    meta_path = cdir / f"ds_{fp}.json"
+    npz_path = cdir / f"ds_{fp}.npz"
+    if meta_path.exists() and npz_path.exists():
+        try:
+            meta = json.loads(meta_path.read_text(encoding="utf-8"))
+            data = np.load(npz_path, allow_pickle=True)
+            X = pd.DataFrame(data["X"], columns=meta["feature_names"])
+            y = pd.Series(data["y"], dtype=np.float64)
+            ds = FactorDataset(
+                X=X, y=y,
+                ts=data["ts"].astype(np.int64),
+                symbol=data["symbol"].astype(object),
+                feature_names=meta["feature_names"], meta=meta["meta"])
+            if verbose:
+                print(f"[数据集缓存] 命中 {fp}（{ds.n_samples} 样本 × "
+                      f"{len(ds.feature_names)} 特征）")
+            return ds
+        except Exception:  # noqa: BLE001
+            pass
+    t0 = _time.time()
+    ds = build_dataset(store_dir, horizon=horizon, bars=bars,
+                       top_factors_per_stock=top_factors_per_stock)
+    if ds.n_samples == 0:
+        return ds
+    try:
+        np.savez_compressed(
+            npz_path, X=ds.X.values, y=ds.y.values, ts=ds.ts,
+            symbol=ds.symbol)
+        meta_path.write_text(json.dumps({
+            "fingerprint": fp, "feature_names": ds.feature_names,
+            "meta": ds.meta,
+        }, ensure_ascii=False), encoding="utf-8")
+    except OSError:
+        pass
+    if verbose:
+        print(f"[数据集缓存] 重建 {fp}（{ds.n_samples} 样本 × "
+              f"{len(ds.feature_names)} 特征，{_time.time() - t0:.0f}s）")
+    return ds

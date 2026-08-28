@@ -39,7 +39,7 @@ def test_build_fundamental_factors():
         "sh600000": {"pe": 6.0, "pb": 0.7, "roe": 11.0, "gross_margin": 35.0,
                      "rev_yoy": 8.0, "profit_yoy": 6.0, "debt_ratio": 88.0},
     }
-    f = build_fundamental_factors(data, close_map={})
+    f = build_fundamental_factors(data)
     assert set(f) == {"ep", "bp", "roe", "gross", "rev_yoy",
                       "profit_yoy", "debt"}
     # EP 高 = 便宜：银行 PE 5-6 → EP 0.2/0.167 > 茅台 0.05

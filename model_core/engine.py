@@ -457,8 +457,10 @@ class AlphaEngine:
 
         ic_list = []
         for n in range(N):
-            x  = factor[n, :-1]
-            y  = target_ret[n, 1:]
+            # M8 修复：与 pnl 同下标对齐（factor[t] ↔ target_ret[t]），
+            # 与 backtest._ts_ic_stability 统一——旧实现偏移一个 bar。
+            x  = factor[n]
+            y  = target_ret[n]
             xm = x - x.mean()
             ym = y - y.mean()
             sx = (xm ** 2).mean().sqrt()

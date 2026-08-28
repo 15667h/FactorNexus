@@ -121,8 +121,11 @@ class ParamFormula:
 # ── 工具函数 ──────────────────────────────────────────────────────────────
 
 def _idx(space: tuple, value) -> int:
-    if value is None:
-        return 0
+    # H9 修复：去掉对 None 的短路。旧实现 `if value is None: return 0` 会让
+    # None 在空间中的真实索引（如 SLICES[11]=None）永远被编码成 0（SLICES[0]），
+    # 导致 slice=None 的公式往返后漂移成 slice=0.0。调用方对 None 的清理应
+    # 在 to_chrom 的三元表达式中完成（如 B/mask_field），而非在 _idx 短路。
+    # None 若存在于 space（SLICES/MASK_RULES），由 space.index(None) 给出真实索引。
     try:
         return space.index(value)
     except ValueError:
@@ -130,10 +133,14 @@ def _idx(space: tuple, value) -> int:
 
 
 def normalize_chrom(chrom: list[int] | tuple) -> list[int]:
-    """规范化染色体：根据 mode 基因把无意义基因置 0（无效位清零）。
+    """规范化染色体：根据 mode/mask_rule 基因把无意义基因置 0（无效位清零）。
 
-    mode=1（单变量）时 B(1) 与 mode2(8) 基因无意义，置 0；
+    - mode=1（单变量）时 B(1) 与 mode2(8) 基因无意义，置 0；
+    - mask_rule=None（基因 5==0，MASK_RULES[0]=None）时 mask_field(4)
+      无意义——chrom_to_formula 强制 mask_field=None，故编码也必须清 0。
     保证「规范化 → 解码 → 再编码」恒等（GP 交叉/变异后必须调用）。
+    H9 修复：此前未清 mask_field，且 _idx 对 None 短路，实测 200 随机种子
+    18.5% 编解码不一致（slice=None 与 mask_field 基因静默丢失）。
     """
     c = [int(x) for x in chrom]
     if len(c) != CHROM_LEN:
@@ -141,6 +148,8 @@ def normalize_chrom(chrom: list[int] | tuple) -> list[int]:
     if c[6] % 2 == 0:  # mode=1
         c[1] = 0  # B
         c[8] = 0  # mode2
+    if c[5] == 0:  # mask_rule=None（MASK_RULES[0]=None）
+        c[4] = 0  # mask_field 无意义，清零
     return c
 
 
@@ -166,10 +175,18 @@ def chrom_to_formula(chrom: list[int] | tuple) -> ParamFormula:
 
 
 def random_chrom(rng=None) -> list[int]:
-    """随机初始化一条染色体（各基因独立均匀采样）。"""
+    """随机初始化一条染色体（各基因独立均匀采样）。
+
+    支持三种 rng：random.Random / numpy RandomState / numpy Generator；
+    None 时用全局 random 模块（行为与旧版一致）。
+    """
     import random as _r
-    rng = rng or _r
-    return [_r.randrange(len(space)) for space in GENE_SPACES]
+    if rng is None:
+        return [_r.randrange(len(space)) for space in GENE_SPACES]
+    if hasattr(rng, "randrange"):            # random.Random / RandomState
+        return [rng.randrange(len(space)) for space in GENE_SPACES]
+    # numpy Generator（无 randrange，用 integers）
+    return [int(rng.integers(len(space))) for space in GENE_SPACES]
 
 
 def formula_signature(f: ParamFormula) -> str:

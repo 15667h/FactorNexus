@@ -118,6 +118,11 @@ class TencentSource(DataSource):
         if not bars:
             raise DataSourceUnavailable(f"腾讯无K线数据：{code}")
         bars.sort(key=lambda b: b.ts)
+        # M27：分页边界可能包含式重复最旧一天 → 按 ts 去重（保留最后一条）
+        _dedup: dict[int, Bar] = {}
+        for _b in bars:
+            _dedup[int(_b.ts)] = _b
+        bars = sorted(_dedup.values(), key=lambda b: b.ts)
         if drop_forming and bars:
             now = time.time()
             while bars and int(bars[-1].ts) > now:
@@ -128,7 +133,11 @@ class TencentSource(DataSource):
     def _parse_daily_row(row: list) -> Bar:
         # 腾讯行序: [date, open, close, high, low, volume] —— open/close 顺序与常规不同！
         date_s, o_s, c_s, h_s, l_s, v_s = (row + [""] * 6)[:6]
-        ts = int(datetime.strptime(str(date_s), "%Y-%m-%d").replace(tzinfo=_CST).timestamp())
+        # M26：统一 ts 为 bar 收盘时刻（A股日线 15:00 CST），与通达信一致，
+        # 使 drop_forming（ts>now 剔除）对开盘时间源也生效——旧实现用当天
+        # 00:00 开盘时刻，盘中 ts 恒 < now，形成中/未收盘 bar 永不弹出。
+        dt_obj = datetime.strptime(str(date_s), "%Y-%m-%d").replace(tzinfo=_CST)
+        ts = int(dt_obj.replace(hour=15, minute=0, second=0).timestamp())
         return Bar(ts=ts, open=float(o_s), high=float(h_s), low=float(l_s),
                    close=float(c_s), volume=float(v_s))
 
@@ -153,7 +162,11 @@ class TencentSource(DataSource):
         bars.sort(key=lambda b: b.ts)
         if drop_forming and bars:
             now = time.time()
-            while bars and int(bars[-1].ts) > now:
+            # M26：分钟 ts 为 bar 起始时刻，形成中 bar 判断须加 bar 时长
+            # （旧实现 ts>now 恒假，最后一根未收盘 bar 泄漏进数据）
+            _secs = {"m1": 60, "m5": 300, "m15": 900, "m30": 1800,
+                     "m60": 3600}.get(mkey, 3600)
+            while bars and int(bars[-1].ts) + _secs > now:
                 bars.pop()
         return bars[-n:]
 
@@ -166,6 +179,12 @@ class TencentSource(DataSource):
         """
         codes = [normalize_code(s).tencent for s in symbols]
         out: dict[str, dict] = {}
+        # M25 修复：腾讯返回纯代码（f[2]），市场前缀须用请求时确认的——
+        # 旧实现 normalize_code(f[2]) 按首字符推断市场，上证指数 000001 会被
+        # 推断成 sz000001，与请求的 sh000001 失配（键错误、指数当深市股票）。
+        req_pure: dict[str, str] = {}
+        for c in codes:
+            req_pure.setdefault(normalize_code(c).code, c)
         for i in range(0, len(codes), 60):  # 每批 ≤60 只
             chunk = codes[i:i + 60]
             resp = self._session.get(_BASE_QUOTE + ",".join(chunk), timeout=self._timeout)
@@ -179,8 +198,8 @@ class TencentSource(DataSource):
                 f = body.split("~")
                 if len(f) < 50 or not f[F_PRICE]:
                     continue
-                # 腾讯返回纯代码（600519），统一规范为带前缀代码（sh600519）
-                code = normalize_code(f[2]).tencent
+                # 腾讯返回纯代码（600519）→ 用请求时确认的前缀还原（M25）
+                code = req_pure.get(f[2], normalize_code(f[2]).tencent)
                 out[code] = {
                     "name": f[1],
                     "price": _f(f, F_PRICE),

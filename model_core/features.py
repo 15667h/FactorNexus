@@ -304,12 +304,19 @@ class MT5FeatureEngineer:
     @staticmethod
     def _willr(close: torch.Tensor, high: torch.Tensor,
                low: torch.Tensor, w: int = 14) -> torch.Tensor:
-        """威廉指标 Williams %R，归一化到 [-1, 0]（-1=超卖，0=超买）。"""
+        """威廉指标 Williams %R，归一化到 [-1, 0]（-1=超卖，0=超买）。
+
+        标准公式：%R = (close - HH_w) / (HH_w - LL_w)，值域 [-1, 0]。
+        H7 修复：旧实现 `(hw - close)/(hw - lw)` 符号反了——正常行情下
+        close∈[lw,hw] 使分子 (hw-close)∈[0,hw-lw]，比值∈[0,1]，再被 clamp
+        到 [-1,0] 恒为 0，WILLR_14 特征失去信息量。对照
+        indicator_builder.py 的 -100·(hh-close)/(hh-ll) 为正确写法。
+        """
         eps = MT5FeatureEngineer._EPS
         pad = torch.zeros(close.shape[0], w - 1, device=close.device, dtype=high.dtype)
         hw = torch.cat([pad, high], dim=1).unfold(1, w, 1).max(dim=-1).values
         lw = torch.cat([pad, low], dim=1).unfold(1, w, 1).min(dim=-1).values
-        willr = (hw - close) / (hw - lw + eps)
+        willr = (close - hw) / (hw - lw + eps)
         return torch.clamp(willr, -1.0, 0.0)
 
     @staticmethod

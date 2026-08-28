@@ -300,9 +300,13 @@ def _oos_significance(f_os: np.ndarray, r_os: np.ndarray,
     from scipy.stats import spearmanr
 
     def _sr(a: np.ndarray, b: np.ndarray) -> float:
+        # T5：常数输入 spearmanr 返回 NaN（ConstantInputWarning）——退化因子
+        # 无预测力，返回 0 并避免 NaN 污染后续统计
+        if np.std(a) < 1e-12 or np.std(b) < 1e-12:
+            return 0.0
         r = spearmanr(a, b)
         stat = r.statistic if hasattr(r, "statistic") else r[0]
-        return float(stat)
+        return float(stat) if np.isfinite(stat) else 0.0
 
     T = len(f_os)
     if T < block * 4:
@@ -978,7 +982,15 @@ def _certify_batch(cands: list[dict], cert_symbols: list[str], tf: str,
                         f = np.asarray(ft.detach().cpu().numpy(), dtype=np.float64)
                     ret_v = d["ret"][-len(f):] if len(f) != len(d["ret"]) else d["ret"]
                     ts_v = d["ts"][-len(f):]
-                    series.append((ts_v, f, ret_v))
+                    # M1 修复：横截面认证只用每只股票的 OOS 段（与单标的
+                    # _certify_single_series 的 factor[-oos_n:] 口径一致）。
+                    # 历史 bug：用全窗口（含源股票训练段）——公式在训练段选优
+                    # 后又在训练段上"认证"，训练段过拟合残留进入 OOS 认证，
+                    # p 值/门槛被轻松越过，且与 five_total（源股票 OOS 段）口径矛盾。
+                    oos_n = max(int(len(f) * cfg.oos_frac), 250)
+                    if oos_n < 250 or oos_n >= len(f):
+                        continue  # 该股票 OOS 段不足，不参与本候选横截面
+                    series.append((ts_v[-oos_n:], f[-oos_n:], ret_v[-oos_n:]))
                 except Exception:  # noqa: BLE001
                     continue
             # ── 3. 截面 RankIC 序列 ───────────────────────────────────
@@ -991,8 +1003,15 @@ def _certify_batch(cands: list[dict], cert_symbols: list[str], tf: str,
                 continue
 
             rankics, days = _cross_sectional_rankics(series)
+            # 门槛随 OOS 段长度自适应（M1 修复配套）：认证段从全窗口缩到 OOS 段
+            # 后，固定 _MIN_CROSS_DAYS 对短 OOS 段过紧——例如 600 根 K 线 +
+            # oos_frac=0.25 → OOS 段 250 天，要求全部 250 天都有效截面日，
+            # 实际总有少量缺值日（245 天）→ 全 reject。改为要求 OOS 段内
+            # ≥ max(200, oos_len-10) 个有效截面日（仍 ≥200，保证统计强度）。
+            oos_len = min(len(ts_v) for ts_v, _, _ in series)
+            min_cross_days = min(_MIN_CROSS_DAYS, max(200, oos_len - 10))
             stats["n_days"] = max(stats["n_days"], days)
-            if days < _MIN_CROSS_DAYS or len(rankics) < 20:
+            if days < min_cross_days or len(rankics) < 20:
                 stats["n_reject"] += 1
                 continue
             mean_ric = float(np.mean(rankics))
@@ -1195,7 +1214,8 @@ def _print_mine_detail(r: dict) -> None:
             print(f"{pad}[{e['engine']}/{e['kind']}] {e['desc'][:52]} "
                   f"OOS_rankIC={e['oos_rankic']} OOS_p={e['oos_p']} "
                   f"DSR={e['dsr']} 五维={e['total']} Sharpe={e['sharpe']} "
-                  f"PBO={e['pbo']} → {e['verdict']}", flush=True)
+                  f"PBO={e['pbo'] if e.get('pbo_valid', False) else 'N/A'} "
+                  f"→ {e['verdict']}", flush=True)
 
 
 def main() -> None:

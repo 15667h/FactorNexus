@@ -177,8 +177,12 @@ def cpcv_paths(pnl: np.ndarray, n_folds: int = 6, purge: int = 0,
     paths = []
     for combo in combos:
         test_folds = [i for i in range(n_folds) if i not in combo]
-        # purge: 训练段每个 fold 尾部剔除 purge 根
-        train = np.hstack([f[:max(len(f) - purge, 0)] for f in
+        # purge + embargo（M15 修复：旧实现只实现 purge，embargo 参数从未生效）。
+        # purge   = 标签泄漏净化：训练段末尾剔除（预测 horizon 标签重叠）
+        # embargo = 相关泄漏隔离：在 purge 基础上再额外剔除，拉开训练尾与测试首
+        #           的序列相关样本（López de Prado CPCV 标准做法）
+        _cut = purge + embargo
+        train = np.hstack([f[:max(len(f) - _cut, 0)] for f in
                            [folds[i] for i in combo]])
         test = np.hstack([folds[i] for i in test_folds])
         if len(train) < 2 or len(test) < 2:

@@ -223,12 +223,6 @@ def _op_intercept(ma: np.ndarray, mb: np.ndarray, mask: np.ndarray | None) -> np
     """A ~ B 线性回归截距（剥离系统性波动后的内生信号）。"""
     cov, sx, sy, _ = _pair(ma, mb, mask)
     beta = cov / (sx * sx + _EPS)
-    if mask is None:
-        ym = mb.mean(axis=1)
-    else:
-        cnt = mask.sum(axis=1) + _EPS
-        ym = (mb * mask).sum(axis=1) / cnt
-    xm = ym - beta * _op_mean(ma, mask) if False else None
     # 截距 = mean(A) - beta * mean(B)
     am = _op_mean(ma, mask)
     bm = _op_mean(mb, mask)

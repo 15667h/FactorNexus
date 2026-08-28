@@ -56,31 +56,36 @@ def load_factors(store_dir: str | Path = "store",
     items = []
     for meta in fs.list_factors():
         rep = meta.get("report") or {}
+        inner = rep.get("meta") or {}   # 日线因子 cert 字段在此
         five = rep.get("five_dim") or {}
-        engine = ((rep.get("meta") or {}).get("engine")) or "?"
+        engine = inner.get("engine") or rep.get("engine") or "?"
+        # kind 优先 report.kind（highfreq/fundamental 由各自管线写入顶层）
+        kind = rep.get("kind") or ("token" if len(meta.get("formula") or []) <= 8
+                                   and engine == "rl" else "param")
+
+        def _g(key, default):
+            # cert 字段兼容两种存放：日线在 rep.meta，高频/基本面在 rep 顶层
+            return inner.get(key, rep.get(key, default))
+
         items.append({
             "symbol": str(meta.get("symbol", "?")),
             "hash": str(meta.get("hash", "?")),
-            "kind": "token" if len(meta.get("formula") or []) <= 8
-                    and (rep.get("meta") or {}).get("engine") == "rl"
-                    else "param",
+            "kind": kind,
             "engine": engine,
             "formula": list(meta.get("formula") or []),
             "vocab_version": str(meta.get("vocab_version", "")),
-            "describe": str(rep.get("describe", "")),
-            "direction": float((rep.get("meta") or {}).get("direction", 0.0)),
-            "oos_rankic": float((rep.get("meta") or {}).get("oos_rankic", 0.0)),
-            "oos_t": float((rep.get("meta") or {}).get("oos_t", 0.0)),
-            "cert_mode": str((rep.get("meta") or {}).get("cert_mode", "")),
-            "cert_rankic": float((rep.get("meta") or {}).get("cert_rankic", 0.0)),
-            "cert_p": float((rep.get("meta") or {}).get("cert_p", 1.0)),
-            "cert_stocks": int((rep.get("meta") or {}).get("cert_stocks", 0)),
-            "cert_days": int((rep.get("meta") or {}).get("cert_days", 0)),
-            "ic_decay": list((rep.get("meta") or {}).get("ic_decay", []) or []),
-            "group_monotonicity": float((rep.get("meta") or {}).get(
-                "group_monotonicity", 0.0)),
-            "long_short_ret": float((rep.get("meta") or {}).get(
-                "long_short_ret", 0.0)),
+            "describe": str(rep.get("describe") or rep.get("feature") or ""),
+            "direction": float(_g("direction", 0.0)),
+            "oos_rankic": float(_g("oos_rankic", 0.0)),
+            "oos_t": float(_g("oos_t", 0.0)),
+            "cert_mode": str(_g("cert_mode", "")),
+            "cert_rankic": float(_g("cert_rankic", 0.0)),
+            "cert_p": float(_g("cert_p", 1.0)),
+            "cert_stocks": int(_g("cert_stocks", 0)),
+            "cert_days": int(_g("cert_days", 0)),
+            "ic_decay": list(_g("ic_decay", []) or []),
+            "group_monotonicity": float(_g("group_monotonicity", 0.0)),
+            "long_short_ret": float(_g("long_short_ret", 0.0)),
             "ic": float(rep.get("ic", 0.0)),
             "rankic": float(rep.get("rankic", 0.0)),
             "icir": float(rep.get("icir", 0.0)),
@@ -113,7 +118,9 @@ def _fmt_time(ts: float) -> str:
 
 
 def _kind_label(kind: str) -> str:
-    return {"param": "参数公式", "token": "token公式"}.get(kind, kind)
+    return {"param": "参数公式", "token": "token公式",
+            "highfreq": "高频特征", "fundamental": "基本面",
+            "rl": "RL公式"}.get(kind, kind)
 
 
 # ── 终端渲染 ────────────────────────────────────────────────────────────────
@@ -131,7 +138,10 @@ def format_factor_list(factors: list[dict]) -> str:
         # IC 列优先显示横截面认证 RankIC（机构范式），否则源股票 OOS IC
         if f.get("cert_mode"):
             ic_disp = f["cert_rankic"]
-            cert_txt = f"{f['cert_stocks']}只×{f['cert_days']}日"
+            if f.get("cert_stocks"):
+                cert_txt = f"{f['cert_stocks']}只×{f['cert_days']}日"
+            else:
+                cert_txt = f"{f['cert_mode']}"
         else:
             ic_disp = f["ic"]
             cert_txt = "单标的OOS"
@@ -171,10 +181,11 @@ def format_factor_profile(f: dict) -> str:
             f"方向={'+1(做多)' if f.get('direction', 1.0) >= 0 else '-1(反向翻转做多)'}")
     else:
         lines.append("（旧因子无认证记录；方向按全样本 IC 符号翻转）")
+    _pbo_s = f"{f['pbo']:.3f}" if f.get("pbo_valid", False) else "N/A"
     lines += [
         "",
         f"── 显著性（多重检验控制）──",
-        f"DSR={f['dsr']:.3f}   PBO={f['pbo']:.3f}   n_trials={f['n_trials']}",
+        f"DSR={f['dsr']:.3f}   PBO={_pbo_s}   n_trials={f['n_trials']}",
     ]
     cpcv = f["cpcv"]
     if isinstance(cpcv, dict) and cpcv:

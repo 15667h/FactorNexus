@@ -192,8 +192,12 @@ class MT5Backtest:
 
         ic_list = []
         for n in range(N):
-            x = factors[n, :-1]
-            y = target_ret[n, 1:]
+            # M8 修复：IC 与 pnl 同下标对齐（factor[t] ↔ target_ret[t]）。
+            # 旧实现 factor[t] vs ret[t+1] 把因子 t 对齐到"t+1 起的未来收益"，
+            # 而 position[t] 实际赚取 target_ret[t]（同下标）——reward 的 IC
+            # 项奖励/惩罚到了错误的预测窗口。
+            x = factors[n]
+            y = target_ret[n]
             xm = x - x.mean()
             ym = y - y.mean()
             sx = (xm ** 2).mean().sqrt()

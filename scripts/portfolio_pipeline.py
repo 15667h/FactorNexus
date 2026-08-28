@@ -37,13 +37,13 @@ from model_core.portfolio.neutralization import (  # noqa: E402
 )
 from model_core.portfolio.orthogonalization import incremental_rankic  # noqa: E402
 from model_core.portfolio.combination import (  # noqa: E402
-    combine_icir, combine_ml, combine_equal,
+    combine_icir, combine_equal,
 )
 from model_core.portfolio.portfolio import (  # noqa: E402
     backtest_portfolio, build_portfolio, performance, risk_model,
 )
 from model_core.portfolio.attribution import (  # noqa: E402
-    brinson_attribution, style_attribution,
+    style_attribution,
 )
 
 
@@ -159,9 +159,15 @@ def build_panels(store_dir: str = "store", horizon: int = 5,
             comp += icir * f_k
         if w_sum > 1e-12:
             comp /= w_sum
+        # H4 修复：用「全市场并集轴」的 ts→行下标映射写回，而非股票内部
+        # K 线位置 t_idx[t]。历史 bug：不同股票因子覆盖长度不同时
+        # （新股 1200 根 vs 老股 2000 根），t_idx[t]（小）≠ axis 位置（大），
+        # 得分被静默错位到更早日期，与 ret_panel 失配。
+        axis_index = {int(t): i for i, t in enumerate(axis)}
         for i, t in enumerate(dates):
-            if t in t_idx and t_idx[t] < len(axis):
-                score_panel.loc[axis_dt[t_idx[t]], sym] = comp[i]
+            pos = axis_index.get(int(t))
+            if pos is not None:
+                score_panel.loc[axis_dt[pos], sym] = comp[i]
         per_stock[sym] = {"factors": len(stock_desc.get(sym, [])),
                           "descs": stock_desc.get(sym, []),
                           "n_days": len(dates)}
@@ -248,8 +254,11 @@ def run_pipeline(args) -> dict:
     print(f"      有持仓天数={active}", flush=True)
 
     # ── 5. 组合回测 ──────────────────────────────────────────────────
-    bt = backtest_portfolio(weights, ret_panel, cost=args.cost,
-                            limit_filter=not args.no_limit_filter)
+    # M2 修复：涨跌停阈值分板块——主板 10%，科创板(688)/创业板(30) 20%。
+    bt = backtest_portfolio(
+        weights, ret_panel, cost=args.cost,
+        limit_filter=not args.no_limit_filter,
+        limit_pct={"sh688": 0.199, "sz30": 0.199, "__default__": 0.099})
     print(f"[5/8] 组合回测: 总收益={_fmt(bt['total_ret'], True)} "
           f"年化={_fmt(bt['annual_ret'], True)} 波动={_fmt(bt['annual_vol'], True)} "
           f"Sharpe={_fmt(bt['sharpe'])} 回撤={_fmt(bt['max_dd'], True)} "
@@ -266,7 +275,7 @@ def run_pipeline(args) -> dict:
           f"IR={_fmt(perf.get('info_ratio', 0))} "
           f"年化波动={_fmt(rm['vol'], True)}")
 
-    # ── 7. Brinson + 风格归因 ────────────────────────────────────────
+    # ── 7. 风格归因（基准 beta + 特质分解）────────────────────────────
     daily = bt["daily_ret"]
     n = min(len(daily), len(bench))
     att_line = "无基准数据"
@@ -274,12 +283,13 @@ def run_pipeline(args) -> dict:
         ex = np.column_stack([bench[:n], np.ones(n)])
         sr = np.column_stack([bench[:n], np.zeros(n)])
         sa = style_attribution(daily[:n], ex, sr)
-        bri = brinson_attribution(float(np.mean(daily)), float(np.mean(bench)),
-                                  np.array([0.6, 0.4]), np.array([0.5, 0.5]),
-                                  np.array([float(np.mean(bench)), 0.0]))
-        att_line = (f"Brinson 配置={bri['allocation']:+.4f} 选股="
-                    f"{bri['selection']:+.4f} | 风格R²={sa['r2']:.3f} "
-                    f"特质={sa['idiosyncratic']:+.4f}")
+        # D3 修复：旧实现用硬编码 [0.6,0.4]/[0.5,0.5] 权重与合成行业收益调
+        # Brinson——纯伪数字，误导归因结论。无真实行业持仓数据时不做 Brinson，
+        # 仅报告风格归因（组合收益 ~ 基准收益 + 截距 的回归分解）。
+        _beta = sa.get("style_contrib", {}).get("style_0", 0.0)
+        att_line = (f"风格R²={sa['r2']:.3f} 基准beta≈{_beta:+.3f} "
+                    f"特质={sa['idiosyncratic']:+.4f} "
+                    f"(Brinson 需行业持仓数据，跳过)")
     print(f"[7/8] 归因: {att_line}")
 
     # ── 8. 每股票因子明细 ────────────────────────────────────────────
@@ -361,11 +371,6 @@ def main() -> None:
                     help="优化器持有期（交易日，默认 5=匹配 horizon）")
     ap.add_argument("--risk-aversion", type=float, default=2.0,
                     help="风险厌恶系数（markowitz/BL，默认 2.0）")
-    ap.add_argument("--window", type=int, default=60,
-                    help="IC_IR 滚动窗口（默认 60 交易日）")
-    ap.add_argument("--ml", action="store_true", help="用随机森林合成（默认 IC_IR）")
-    ap.add_argument("--ml-window", type=int, default=120, help="ML 滚动训练窗口")
-    ap.add_argument("--ml-trees", type=int, default=100, help="ML 树数")
     ap.add_argument("--horizon", type=int, default=5, help="收益预测周期")
     ap.add_argument("--bars", type=int, default=0,
                     help="K 线窗口（0=全历史）")

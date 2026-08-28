@@ -135,7 +135,10 @@ def test_certify_batch_momentum_passes(tmp_path):
     assert accepted[0]["cert"]["rankic"] > 0.02
     assert accepted[0]["cert"]["p"] <= 0.05
     assert accepted[0]["cert"]["stocks"] == 30
-    assert accepted[0]["cert"]["days"] >= 250
+    # M1 修复后横截面认证只评估每只股票的 OOS 段（oos_frac=0.25 → 600 根
+    # K 线的 OOS 段约 250 天，有效截面日 245）。门槛随 OOS 段自适应
+    # （min(250, max(200, oos_len-10))），故此处断言有效截面日 ≥ 200 即可。
+    assert accepted[0]["cert"]["days"] >= 200
 
 
 def test_certify_batch_noise_rejected(tmp_path):

@@ -60,9 +60,9 @@ def test_rank_average_equal_weights():
     p1 = pd.DataFrame({"a": [1.0, 3.0], "b": [3.0, 1.0]}, index=idx)
     p2 = pd.DataFrame({"a": [3.0, 1.0], "b": [1.0, 3.0]}, index=idx)
     out = rank_average([p1, p2])
-    # 第 1 行：a=(1+2)/2=1.5, b=(2+1)/2=1.5（rank 后等权平均）
-    assert np.allclose(out.iloc[0].values, [1.5, 1.5])
-    assert np.allclose(out.iloc[1].values, [1.5, 1.5])
+    # 第 1 行：a=(0+1)/2=0.5, b=(1+0)/2=0.5（M4 归一化秩等权平均）
+    assert np.allclose(out.iloc[0].values, [0.5, 0.5])
+    assert np.allclose(out.iloc[1].values, [0.5, 0.5])
 
 
 def test_rank_average_weighted_and_nan():
@@ -72,10 +72,10 @@ def test_rank_average_weighted_and_nan():
     p2 = pd.DataFrame({"a": [2.0, 1.0, 3.0], "b": [1.0, 3.0, 2.0]},
                       index=idx)
     out = rank_average([p1, p2], weights=[0.7, 0.3])
-    # 第 1 行：a=0.7*1+0.3*2=1.3, b=0.7*2+0.3*1=1.7
-    assert np.allclose(out.iloc[0].values, [1.3, 1.7])
-    # 第 3 行 a 只有 p2 有值 → 2.0（NaN 传播）
-    assert np.allclose(out.iloc[2]["a"], 2.0)
+    # 第 1 行：a=0.7*0+0.3*1=0.3, b=0.7*1+0.3*0=0.7（归一化秩加权）
+    assert np.allclose(out.iloc[0].values, [0.3, 0.7])
+    # 第 3 行 a 只有 p2 有值：p2 a=3 行内 rank=2→归一化 1.0 → 0.3*1/0.3=1.0
+    assert np.allclose(out.iloc[2]["a"], 1.0)
 
 
 def test_bagging_seed_diversity():
@@ -136,3 +136,58 @@ def test_hold_weights_semantics():
     # hold=1 原样返回
     h1 = _hold_weights(w, 1)
     assert np.allclose(h1.values, w.values)
+
+
+# ── T4 回归：walk-forward gap 防泄漏 + 公式编解码往返 ──────────────────────
+
+def test_walk_forward_gap_defaults_to_horizon():
+    """gap=None 时自动取 horizon（防训练标签泄漏）；gap<horizon 告警。"""
+    import inspect
+    from model_core.strategy_factory.walk_forward import (
+        walk_forward_fit_predict, _train_predict)
+    sig = inspect.signature(walk_forward_fit_predict)
+    assert sig.parameters["gap"].default is None      # 默认自动
+    # 源码含防泄漏逻辑
+    src = inspect.getsource(walk_forward_fit_predict)
+    assert "ds.meta.get(\"horizon\", 5)" in src
+    assert "gap < horizon" in src                     # 过小 gap 告警
+    # _train_predict 支持 ts 透传（逐日截面集成，M3）
+    sig2 = inspect.signature(_train_predict)
+    assert "ts_te" in sig2.parameters
+
+
+def test_walk_forward_gap_leak_prevented():
+    """horizon=10 时 gap=0（自动→10）不泄漏；显式 gap=2 触发告警且结果含泄漏警告。"""
+    from model_core.strategy_factory.walk_forward import walk_forward_fit_predict
+    rng = np.random.default_rng(0)
+    n = 400
+    ts = np.arange(1_700_000_000, 1_700_000_000 + n, dtype=np.int64)
+    X = pd.DataFrame(rng.normal(size=(n, 4)), columns=list("abcd"))
+    # 强信号：特征0 的滞后项预测未来
+    y = pd.Series(np.concatenate([np.zeros(10), X["a"].values[:-10]]),
+                  dtype=np.float64)
+    ds = FactorDataset(X=X, y=y, ts=ts, symbol=np.full(n, "s1", dtype=object),
+                       feature_names=list("abcd"),
+                       meta={"horizon": 10, "n_factors": 4, "n_symbols": 1,
+                             "n_samples": n})
+    # gap=None → 自动取 horizon=10，正常滚动训练
+    res = walk_forward_fit_predict(
+        ds, model_factory=lambda: make_lgbm_regressor(
+            n_estimators=10, learning_rate=0.1),
+        step=40, window=120, gap=None, min_train=30)
+    assert res.n_folds >= 1
+
+
+def test_formula_chrom_roundtrip_consistency():
+    """公式编解码往返恒等（H9 回归：200 随机种子 0 不一致）。"""
+    import random
+    from model_core.formula_dsl import (random_chrom, chrom_to_formula,
+                                        normalize_chrom)
+    bad = 0
+    for seed in range(200):
+        random.seed(seed)
+        c = random_chrom(random)
+        f = chrom_to_formula(c)
+        if f.to_chrom() != normalize_chrom(c):
+            bad += 1
+    assert bad == 0, f"编解码不一致 {bad}/200"

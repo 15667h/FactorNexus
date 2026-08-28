@@ -34,6 +34,7 @@ class FactorReport:
     turnover: float = 0.0
     dsr: float = 0.5
     pbo: float = 0.5
+    pbo_valid: bool = False   # PBO 是否真的算了（单因子无对照时 False → 显示 N/A）
     cpcv: dict = field(default_factory=dict)
     n_trials: int = 0
     mined_at: float = field(default_factory=time.time)
@@ -102,8 +103,9 @@ def build_factor_report(
             m = (f >= q[i]) & (f < q[i + 1]) if i < 9 else (f >= q[9])
             if m.sum() >= 3:
                 group_ret.append(float(r[m].mean()))
-        while len(group_ret) < 10:
-            group_ret.append(0.0)
+        # M13 修复：空缺分组不填 0.0——伪 0 会破坏单调性（spearman 秩）与
+        # 多空收益（group_ret[-1]-group_ret[0]）。不足 10 组时仅输出真实组，
+        # 下方 len(group_ret)==10 判断自然跳过单调性/多空计算。
 
     # 仓位 = tanh(因子)（对齐信号口径），PnL = pos*ret
     pos = np.tanh(f)
@@ -113,8 +115,22 @@ def build_factor_report(
 
     five_dim = five_dim_evaluate(f, r, library_factors)
 
-    # 显著性（PBO 需要"因子×时间"矩阵，单因子时用自身分块模拟）
-    pbo = compute_pbo_cscv(pnl.reshape(1, -1), n_blocks=8) if n >= 32 else 0.5
+    # 显著性。PBO 修复：CSCV 需要 ≥3 个因子的 PnL 矩阵（训练段选最优、测试段
+    # 对比中位数）。旧实现 `pnl.reshape(1,-1)` 只有 1 个因子 → compute_pbo_cscv
+    # 的 n_f<3 守卫恒返回 0.5（伪"中等过拟合"，误导入库判定）。修复：用因子库
+    # 已有因子构造对照矩阵（自身 + 库内因子×收益），不足 3 组则 pbo_valid=False，
+    # 消费方显示 N/A 而非伪 0.5。
+    pbo, pbo_valid = 0.5, False
+    if n >= 32:
+        _lib_pnls: list[np.ndarray] = []
+        for _lf in (library_factors or []):
+            _lf = np.asarray(_lf, dtype=np.float64)[:n]
+            if _lf.shape[0] == n and np.isfinite(_lf).all():
+                _lib_pnls.append(np.tanh(_lf) * r)
+        _mat = [pnl] + _lib_pnls
+        if len(_mat) >= 3:
+            pbo = compute_pbo_cscv(np.vstack(_mat), n_blocks=8)
+            pbo_valid = True
     dsr = compute_dsr(pnl, n_trials=max(n_trials, 2), ppy=ppy)
     cpcv = cpcv_summary(cpcv_paths(pnl, n_folds=6))
 
@@ -135,7 +151,7 @@ def build_factor_report(
         sharpe=_sharpe(pnl, ppy),
         max_dd=_max_drawdown(pnl),
         turnover=turnover,
-        dsr=dsr, pbo=pbo, cpcv=cpcv,
+        dsr=dsr, pbo=pbo, pbo_valid=pbo_valid, cpcv=cpcv,
         n_trials=n_trials,
         meta=meta_out,
     )

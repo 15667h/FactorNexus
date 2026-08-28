@@ -103,7 +103,10 @@ def monitor_factor(symbol: str, hash_: str, store_dir: str | Path = "store",
         return {"symbol": symbol, "hash": hash_, "status": "stale",
                 "alerts": [f"数据不足 {n} 根"]}
     factor, close = factor[-n:], close[-n:]
-    ret = np.zeros(n)
+    # M12 修复：期望收益尾部 horizon 根无未来数据，置 NaN 而非 0——
+    # 旧实现置 0 会作为真实样本参与 spearmanr 与块自助，系统性拉低 |RankIC|
+    # 并抬高 p 值（约 horizon/recent≈4% 的伪 0 样本）。
+    ret = np.full(n, np.nan)
     if n > horizon:
         ret[:n - horizon] = close[horizon:] / close[:-horizon] - 1.0
 

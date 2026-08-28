@@ -92,10 +92,24 @@ class SinaSource(DataSource):
                 raise DataSourceUnavailable(f"新浪A股源不支持周期 {timeframe}")
             bars = self._fetch_a_share(norm.sina, _TF_TO_SCALE[timeframe], n)
         bars.sort(key=lambda b: b.ts)
+        # M27 修复：分页边界若为包含式，最旧一天会在相邻两页各出现一次 →
+        # 按 ts 去重（保留最后一条），避免重复 bar 进入因子计算。
+        _dedup: dict[int, Bar] = {}
+        for _b in bars:
+            _dedup[int(_b.ts)] = _b
+        bars = sorted(_dedup.values(), key=lambda b: b.ts)
         if drop_forming and bars:
             now = time.time()
-            while bars and int(bars[-1].ts) > now:
-                bars.pop()
+            # M26：日线 ts 已统一为收盘时刻（15:00）→ ts>now 正确剔除形成中 bar；
+            # 分钟 ts 为 bar 起始时刻 → 需加 bar 时长判断（旧实现两者都恒假）
+            if timeframe == "1d":
+                while bars and int(bars[-1].ts) > now:
+                    bars.pop()
+            else:
+                _secs = {"5m": 300, "15m": 900, "30m": 1800,
+                         "60m": 3600}.get(timeframe, 300)
+                while bars and int(bars[-1].ts) + _secs > now:
+                    bars.pop()
         return bars[-n:]
 
     # ── A股历史 K 线（scale=240 为日线，无复权）────────────────────────────
@@ -115,7 +129,10 @@ class SinaSource(DataSource):
             rows = payload if isinstance(payload, list) else []
             if not rows:
                 break
-            page = [self._parse_a_share_row(r) for r in rows]
+            # M28：坏行返回 None，跳过（旧实现个别字段缺失/时间格式异常会
+            # 抛 KeyError/ValueError 拖垮整次拉取）
+            page = [b for b in (self._parse_a_share_row(r) for r in rows)
+                    if b is not None]
             bars = page + bars
             if len(rows) < min(need, 1023):
                 break
@@ -128,18 +145,34 @@ class SinaSource(DataSource):
         return bars
 
     @staticmethod
-    def _parse_a_share_row(row: dict) -> Bar:
+    def _parse_a_share_row(row: dict) -> Bar | None:
+        """解析新浪 A股 K 线行；字段缺失/时间格式异常返回 None（调用方跳过）。
+
+        M26：日线 ts 统一为 bar 收盘时刻（A股日线 15:00 CST），与通达信一致，
+        使 drop_forming（ts>now 剔除形成中 bar）对开盘时间源也生效——旧实现
+        用当天 00:00 开盘时刻，盘中 ts 恒 < now，形成中/未收盘 bar 永不弹出。
+        M28：字段用 .get + 数值校验，坏行不抛异常。
+        """
         day = str(row.get("day", ""))
-        # 日线 "2026-08-26" 或分钟线 "2026-08-26 10:00:00"（带时间）
-        if " " in day:
-            ts = int(datetime.strptime(day, "%Y-%m-%d %H:%M:%S")
-                     .replace(tzinfo=_CST).timestamp())
-        else:
-            ts = int(datetime.strptime(day, "%Y-%m-%d")
-                     .replace(tzinfo=_CST).timestamp())
-        return Bar(ts=ts,
-                   open=float(row["open"]), high=float(row["high"]),
-                   low=float(row["low"]), close=float(row["close"]),
+        try:
+            if " " in day:
+                try:
+                    ts = int(datetime.strptime(day, "%Y-%m-%d %H:%M:%S")
+                             .replace(tzinfo=_CST).timestamp())
+                except ValueError:
+                    # 分钟行可能缺秒（"2026-08-03 10:05"）
+                    ts = int(datetime.strptime(day, "%Y-%m-%d %H:%M")
+                             .replace(tzinfo=_CST).timestamp())
+            else:
+                dt_obj = datetime.strptime(day, "%Y-%m-%d").replace(tzinfo=_CST)
+                ts = int(dt_obj.replace(hour=15, minute=0, second=0).timestamp())
+            o = float(row["open"])
+            h = float(row["high"])
+            l = float(row["low"])
+            c = float(row["close"])
+        except (KeyError, ValueError, TypeError):
+            return None
+        return Bar(ts=ts, open=o, high=h, low=l, close=c,
                    volume=float(row.get("volume", 0.0)))  # 单位：股
 
     # ── 期货日线（含持仓量）──────────────────────────────────────────────
@@ -152,7 +185,8 @@ class SinaSource(DataSource):
         rows = self._get_jsonp(_FUT_DAILY, {"symbol": code}) or []
         if not rows:
             raise DataSourceUnavailable(f"新浪期货日线无数据：{code}")
-        return [self._parse_fut_row(r) for r in rows]
+        return [b for b in (self._parse_fut_row(r) for r in rows)
+                if b is not None]
 
     # ── 期货分钟线（含夜盘）──────────────────────────────────────────────
 
@@ -161,19 +195,29 @@ class SinaSource(DataSource):
         rows = self._get_jsonp(_FUT_MIN, params) or []
         if not rows:
             raise DataSourceUnavailable(f"新浪期货分钟线无数据：{code} type={type_}")
-        bars = [self._parse_fut_row(r, minute=True) for r in rows]
-        return bars
+        return [b for b in (self._parse_fut_row(r, minute=True) for r in rows)
+                if b is not None]
 
     @staticmethod
-    def _parse_fut_row(row: dict, minute: bool = False) -> Bar:
+    def _parse_fut_row(row: dict, minute: bool = False) -> Bar | None:
+        """解析新浪期货行；字段缺失/格式异常返回 None（M28：坏行不拖垮整次拉取）。"""
         d = str(row.get("d", ""))
-        if minute:
-            ts = int(datetime.strptime(d, "%Y-%m-%d %H:%M:%S").replace(tzinfo=_CST).timestamp())
-        else:
-            ts = int(datetime.strptime(d[:10], "%Y-%m-%d").replace(tzinfo=_CST).timestamp())
-        return Bar(ts=ts,
-                   open=float(row["o"]), high=float(row["h"]),
-                   low=float(row["l"]), close=float(row["c"]),
+        try:
+            if minute:
+                try:
+                    ts = int(datetime.strptime(d, "%Y-%m-%d %H:%M:%S")
+                             .replace(tzinfo=_CST).timestamp())
+                except ValueError:
+                    ts = int(datetime.strptime(d, "%Y-%m-%d %H:%M")
+                             .replace(tzinfo=_CST).timestamp())
+            else:
+                ts = int(datetime.strptime(d[:10], "%Y-%m-%d")
+                         .replace(tzinfo=_CST).timestamp())
+            o = float(row["o"]); h = float(row["h"])
+            l = float(row["l"]); c = float(row["c"])
+        except (KeyError, ValueError, TypeError):
+            return None
+        return Bar(ts=ts, open=o, high=h, low=l, close=c,
                    volume=float(row.get("v", 0.0)),
                    extra={"oi": float(row["p"])} if row.get("p") not in (None, "", "0.000") else None)
 

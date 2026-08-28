@@ -97,19 +97,26 @@ def build_highfreq_features(df: pd.DataFrame) -> dict[str, np.ndarray]:
     ret[1:] = close[1:] / (close[:-1] + eps) - 1.0
 
     feats: dict[str, np.ndarray] = {}
-    # 开盘跳空需要昨日收盘：逐日计算
+    # 开盘跳空 = 当日**第一根** bar 的 open/昨收 - 1（M19 修复：旧实现把
+    # 全天每分钟 open 相对昨收的偏离取均值，混入盘中价格，非开盘跳空）
     prev_close = None
     gap_vals = np.full(n, np.nan)
     for i in range(n):
         d = _day_key(int(ts[i]))
+        first_of_day = (i == 0) or (_day_key(int(ts[i - 1])) != d)
         if i > 0 and _day_key(int(ts[i - 1])) != d:
             prev_close = close[i - 1]
-        if prev_close is not None:
+        if first_of_day and prev_close is not None:
             gap_vals[i] = open_[i] / (prev_close + eps) - 1.0
     feats["hf_open_gap"] = agg_day(gap_vals, np.mean)
 
-    feats["hf_intra_ampl"] = agg_day(
-        (high - low) / (open_ + eps), np.max)
+    # 日内振幅 = (当日最高 - 当日最低) / 当日开盘（M20 修复：旧实现取
+    # 每分钟 (H-L)/O 的最大值，是"分钟相对振幅最大值"而非日内振幅）
+    day_high = _per_day(ts, high, days, np.max)
+    day_low = _per_day(ts, low, days, np.min)
+    day_open = _per_day(ts, open_, days,
+                        lambda v: float(v[0]) if len(v) else np.nan)
+    feats["hf_intra_ampl"] = (day_high - day_low) / (day_open + eps)
     feats["hf_intra_vol"] = agg_day(ret, np.std)
     feats["hf_intra_skew"] = _per_day(
         ts, ret, days,
@@ -187,6 +194,9 @@ def build_highfreq_features(df: pd.DataFrame) -> dict[str, np.ndarray]:
             buf_r, buf_v = [], []
         buf_r.append(ret[i])
         buf_v.append(vol[i])
+    # M21 修复：循环结束后 flush 最后一天（旧实现最后一个交易日恒为 NaN）
+    if len(buf_r) >= 4 and n > 0:
+        vol_corr_vals[n - 1] = _vol_corr(np.array(buf_r), np.array(buf_v))
     feats["hf_vol_corr"] = _per_day(ts, vol_corr_vals, days, np.nanmean)
 
     # 大分钟单占比：量 > 日内均值+2σ 的分钟占比（至少 4 根）

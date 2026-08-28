@@ -1,2 +1,0 @@
-symbol,status,n_gp,n_llm,n_rl,n_accepted,best_dsr,best_ic,best_engine,best_formula,elapsed_s
-sh600000,ok,9,3,1,0,0.0,0.0,gp,low的Quantile（60期·切片0.5，按ret5掩码high_0.7）,46.1

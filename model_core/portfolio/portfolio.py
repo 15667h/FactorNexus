@@ -38,7 +38,11 @@ def build_portfolio(score_panel: pd.DataFrame, n_top: int = 30,
     out = pd.DataFrame(0.0, index=score_panel.index, columns=score_panel.columns)
     for ts, row in score_panel.iterrows():
         vals = row.dropna()
-        if vals.empty or len(vals) < n_top * 2:
+        # H12 修复：纯多头只需 n_top 只即可建仓。旧实现无条件要求
+        # len(vals) >= n_top*2，当有效股票数在 [n_top, 2*n_top) 时整日组合
+        # 被跳过（即使本可持有 n_top 只多头）。
+        need = n_top * 2 if long_short else n_top
+        if vals.empty or len(vals) < max(need, 1):
             continue
         if threshold is not None:
             vals = vals[vals.abs() >= threshold]
@@ -68,13 +72,28 @@ def build_portfolio(score_panel: pd.DataFrame, n_top: int = 30,
 
 def backtest_portfolio(weights: pd.DataFrame, ret1d_panel: pd.DataFrame,
                        cost: float = 0.0003, limit_filter: bool = True,
-                       ppy: int = 244) -> dict:
+                       ppy: int = 244,
+                       limit_pct: float | dict[str, float] | None = None,
+                       impact_rates: dict[str, float] | None = None) -> dict:
     """组合回测（Qlib Order Executor 简化版）。
 
     规则：
       - t 收盘信号 → t+1 执行（避免前视）
       - 每日 mark-to-market，调仓日扣换手成本（双边 |Δw|·cost）
-      - 涨跌停不可成交（±9.9% 近似；跳变日收益置 0 防混库）
+      - 涨跌停不可成交（跳变日收益置 0 防混库）
+
+    Args:
+        limit_pct: 涨跌停判定阈值。
+            None → 统一 0.099（主板 10%）。
+            float → 统一阈值。
+            dict  → 按 symbol 前缀匹配，如 {"sh688": 0.199, "sz30": 0.199,
+                    "__default__": 0.099}（科创/创业板 20%）。M2 修复：
+                    旧实现统一 9.9%，科创板/创业板正常 15% 涨幅被误判涨停
+                    砍仓，系统性低估组合收益、放大换手。
+        impact_rates: 每只股票的额外单边冲击成本率 {symbol: 率}（P21 接入，
+            用 impact_cost.impact_cost_rate 按 ADV/波动率预计算）。提供时
+            调仓成本 = Σ|Δw_s|·(cost + impact_rates[s])——旧实现只有统一 cost，
+            impact_cost.py docstring 承诺的 impact 接入未实现。
 
     Returns: {nav, daily_ret, total_ret, annual_ret, annual_vol, sharpe,
               sortino, max_dd, calmar, turnover, n}
@@ -86,6 +105,26 @@ def backtest_portfolio(weights: pd.DataFrame, ret1d_panel: pd.DataFrame,
                 "total_ret": 0.0, "annual_ret": 0.0, "annual_vol": 0.0,
                 "sharpe": 0.0, "sortino": 0.0, "max_dd": 0.0,
                 "calmar": 0.0, "turnover": 0.0, "n": 0}
+    # 每只股票的涨跌停阈值（M2）
+    default_pct = 0.099
+    pct_map: dict[str, float] | None = None
+    if isinstance(limit_pct, dict):
+        pct_map = limit_pct
+        default_pct = float(limit_pct.get("__default__", 0.099))
+    elif limit_pct is not None:
+        default_pct = float(limit_pct)
+    limit_by_sym = np.full(len(symbols), default_pct)
+    if pct_map:
+        for sym_i, s in enumerate(symbols):
+            for prefix, p in pct_map.items():
+                if prefix != "__default__" and s.startswith(prefix):
+                    limit_by_sym[sym_i] = float(p)
+                    break
+    # 每只股票的单边总成本率 = cost + 冲击成本（P21 impact 接入）
+    eff_cost = np.full(len(symbols), cost, dtype=np.float64)
+    if impact_rates:
+        for sym_i, s in enumerate(symbols):
+            eff_cost[sym_i] = cost + float(impact_rates.get(s, 0.0))
     w_prev = np.zeros(len(symbols))
     pnl = np.zeros(len(ts))
     turnover_sum = 0.0
@@ -94,18 +133,18 @@ def backtest_portfolio(weights: pd.DataFrame, ret1d_panel: pd.DataFrame,
     for i, t in enumerate(ts):
         w_cur = weights.loc[t].reindex(symbols).fillna(0.0).values
         if limit_filter:
-            # 涨停不可买入（正权重日收益>=9.9% 视为涨停，买入受限→保持原仓位）
+            # 涨停不可买入（正权重日收益>=阈值视为涨停，买入受限→保持原仓位）
             r = ret1d[i]
             w_cur = w_cur.copy()
-            up = r >= 0.099
-            down = r <= -0.099
+            up = r >= limit_by_sym
+            down = r <= -limit_by_sym
             w_cur[up & (w_cur > w_prev)] = w_prev[up & (w_cur > w_prev)]
             w_cur[down & (w_cur < w_prev)] = w_prev[down & (w_cur < w_prev)]
         # 跳变防御：|1日收益|>21% 置 0（混库/复权瑕疵，收益不可信）
         r_safe = np.where(np.abs(ret1d[i]) > 0.21, 0.0, ret1d[i])
         pnl[i] = float(w_prev @ r_safe)
         turnover = float(np.abs(w_cur - w_prev).sum())
-        pnl[i] -= turnover * cost
+        pnl[i] -= float(np.abs(w_cur - w_prev) @ eff_cost)
         turnover_sum += turnover
         nav[i + 1] = nav[i] * (1.0 + pnl[i])
         w_prev = w_cur

@@ -49,8 +49,6 @@ def test_limit_pct_board_aware():
     close = _trend_close(300).copy()
     # 构造 +15% 大涨日（创业板合法，主板涨停）
     close[100] = close[99] * 1.15
-    # 后续价格延续，避免 create 自身跳变防御干扰
-    close[101:] = close[101:] - (close[100] - close[99] - close[100] + close[99])
     f = _factor_signal(300)
 
     b_main = backtest_factor(f, close, horizon=5, cost=0.0,
@@ -60,54 +58,51 @@ def test_limit_pct_board_aware():
     # 创业板口径下该日不被视为涨停 → 仓位不受限（收益应 ≥ 主板口径）
     assert b_gem["limit_pct"] == 0.199
     # 因子方向为正 → 该日多单：主板被误判涨停砍仓，创业板保留
-    # （用 pnl 序列对比：创业板口径在该日的换手/收益差异）
     assert b_gem["total_ret"] >= b_main["total_ret"] - 1e-12
 
 
 # ── 跳变日建仓冻结 ────────────────────────────────────────────────────────
 
 def test_jump_day_freezes_position_no_turnover():
-    close = _trend_close(300).copy()
-    # 造一个大跳变日（+120%，混库特征）：当日收益置 0、建仓冻结
-    close[150] = close[149] * 2.2
-    close[151:] = close[151:] / 2.2 * 2.2  # 后续等比例缩放，保持形态
-    f = _factor_signal(300)
+    """跳变日恰为建仓日 → 建仓冻结：不换手、不付成本、当日收益置 0。
 
-    b = backtest_factor(f, close, horizon=5, cost=0.001, slippage=0.0,
+    T1 修复：旧测试函数体只有 `pass`，核心行为零覆盖。
+    断言基于实现：跳变建仓日 w=prev_pos（冻结）→ turnover_cost=0、
+    ret1d 置 0 → pnl[101]=0 → nav 该日连续。
+    """
+    T = 200
+    close = _trend_close(T).copy()
+    # 跳变日 index=101（101%5==1 → 是建仓日），+120%（混库特征）
+    close[101] = close[100] * 2.2
+    # 后续回缩放保持形态（避免连续大负收益干扰 nav 断言）
+    close[102:] = close[102:] * (close[100] / close[101])
+    f = np.full(T, 1.5)                    # 满仓多头
+    b = backtest_factor(f, close, horizon=5, cost=0.01, slippage=0.0,
                         limit_filter=True)
     assert b["jump_days"] >= 1
-    # 跳变日收益为 0：pnl 序列中该日前后净值不应因跳变日产生收益
     nav = b["nav"]
-    # 跳变日索引（t+1 执行口径下跳变日收益在 index 150）
-    # 收益置 0 → 当日 pnl=0 → nav[151] == nav[150]（若该日无其他交易）
-    # 由于跳变日也可能在建仓段内，直接验证：任何跳变日不产生 |pnl|>1e-9 的收益
-    # （更稳健：跳变日当天不会发生换手成本——turnover 成本只出现在建仓日）
-    # 用内部检查：构造跳变日恰为建仓日（e=151 若 horizon=5，151%5==1 → 是建仓日）
-    # 验证该建仓日无换手成本（cost=0.001，若非冻结会扣除）
-    pass  # 细节在下方强断言中验证
+    # 跳变建仓日 101：冻结 → turnover_cost=0、ret1d 置 0 → pnl[101]=0
+    # → nav[102] == nav[101]。若未冻结，会扣 0.905*0.01 换手成本。
+    assert abs(nav[102] - nav[101]) < 1e-9
 
 
 def test_jump_day_no_pnl_contribution():
-    """跳变日收益强制置 0：即使仓位非零，当日 pnl 贡献为 0。"""
+    """跳变日收益强制置 0：即使仓位非零，跳变日净值无变化。
+
+    T2 修复：旧断言 total_ret<1.0 在删除防御后仍成立（假阳性）；
+    现断言 nav 在跳变日连续（未防御时 nav 会 +150%×仓位）。
+    """
     T = 200
     close = _trend_close(T).copy()
-    close[100] = close[99] * 2.5                      # 跳变
+    close[100] = close[99] * 2.5                      # 跳变 +150%
     close[101:] = close[101:] * (close[100] / close[99] / 2.5)  # 保持后续比例
     f = np.full(T, 3.0)                                # 满仓多单
     b = backtest_factor(f, close, horizon=5, cost=0.0)
-    # 跳变日 index=100（t+1 执行 → 收益在 index 100 计入 ret1d[100]）
-    # 构造与实现对齐：ret1d[100] = close[100]/close[99]-1 = +150% → 应置 0
-    # 验证：全满仓 + 单日 +150% 若未防御，nav 会跳变；防御后当日无变化
-    nav = b["nav"]
-    # 跳变日前的净值（index 99）与跳变日后的净值（index 100）
-    # 注意执行口径：pos_exec = roll(pos,1) → 跳变日收益发生在 index 100 段
-    # 但 pnl[100] = w * ret1d[100] = 0（ret 置 0）→ nav[100] 无跳变
-    # 然而 nav 是逐日累积：nav[100] = nav[99] * (1 + pnl[100])
-    # 若无防御 pnl[100] = 3 * 1.5 = 4.5 → nav 爆增；有防御 pnl[100]=0
-    # 用相邻段对比：该日收益应为 0（pnl 序列不可直接取，用 nav 比值）
-    # 简化断言：总收益远小于未防御的理论值（+450%+）
-    assert b["total_ret"] < 1.0
     assert b["jump_days"] >= 1
+    nav = b["nav"]
+    # 跳变日 index=100：ret1d[100]=+150% 被置 0 → pnl[100]=0（满仓 w≈0.995）
+    # → nav[101] == nav[100]。未防御时 pnl[100]≈1.49 → nav 爆增 149%。
+    assert abs(nav[101] - nav[100]) < 1e-9
 
 
 # ── 方向前半段估计（防前视）───────────────────────────────────────────────

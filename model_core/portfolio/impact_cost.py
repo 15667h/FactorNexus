@@ -10,7 +10,9 @@ model_core/portfolio/impact_cost.py — 冲击成本模型（P21）
 用法：
     from model_core.portfolio.impact_cost import impact_cost_rate
     rate = impact_cost_rate(notional=1e6, adv=5e7, sigma=0.02, price=10.0)
-    # 或接入回测：backtest_portfolio(..., impact=True)
+    # 接入回测：先按股票预计算冲击成本率，再传 backtest_portfolio(impact_rates=...)
+    #   rates = {sym: impact_cost_rate(...) for sym in symbols}
+    #   bt = backtest_portfolio(w, ret, impact_rates=rates)
 """
 from __future__ import annotations
 

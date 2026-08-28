@@ -51,9 +51,11 @@ def build_feature_panel(df: pd.DataFrame) -> torch.Tensor:
 
 
 def build_target_ret(df: pd.DataFrame, horizon: int = 5) -> torch.Tensor:
-    """K线 → [1, T] 未来收益标签（t+horizon 开盘到开盘的对数/简单收益）。
+    """K线 → [1, T] 未来收益标签（收盘到收盘的简单收益）。
 
-    与 ParquetDataManager._compute_target_ret 口径对齐：末尾 horizon 位置为 0。
+    D6 修复：旧 docstring 写"开盘到开盘"，实现为收盘到收盘
+    （ret[t] = close[t+horizon]/close[t] - 1）。与挖矿/回测口径一致。
+    末尾 horizon 位置为 0。
     """
     close = df["close"].values.astype(np.float64)
     T = len(close)

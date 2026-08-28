@@ -79,18 +79,29 @@ def evaluate_five_objectives(factor: np.ndarray, ret: np.ndarray) -> np.ndarray:
 
 def shortboard_penalize(objectives: np.ndarray, weak_quantile: float = 0.10,
                         penalty_per_weak: float = 0.5) -> np.ndarray:
-    """动态短板惩罚：目标百分位 < weak_quantile 的短板，每个下修 penalty 层。
+    """动态短板惩罚：当代整体处于低位的目标（短板）对其劣化，清除畸形因子。
 
-    返回修正后的目标（对应前沿面层级下修，pymoo 中通过把短板目标值劣化实现）。
+    H8 修复：旧实现 `pct = (col < np.quantile(col, weak_quantile)).mean()` 恒
+    等于 weak_quantile（第 10 百分位以下的占比恒为 ~0.10），`pct > 0.5`
+    永假 → 短板惩罚分支永不执行，机制完全失效。
+
+    新判据：把每列归一化到当代 [0,1]，若该目标的中位数归一化值 <
+    weak_quantile（超过一半的个体挤在当代底部 10% 区间 → 该目标是系统性
+    短板，多数个体在该目标上表现极差），则触发——对表现越差的个体压缩越多
+    （保留好个体），迫使 Pareto 偏向在该弱目标上有区分度的解。完全退化的
+    目标（min==max）跳过（无信息量，Pareto 自然淘汰）。
     """
     out = objectives.copy()
+    if objectives.ndim != 2 or objectives.shape[1] == 0:
+        return out
     for j in range(objectives.shape[1]):
         col = objectives[:, j]
-        pct = (col < np.quantile(col, weak_quantile)).mean()
-        if pct > 0.5:  # 该目标在当代是"短板"（多数个体低于阈值分位）
-            # 把该目标劣化：所有个体该目标乘以 (1 - penalty_per_weak * 0.1)
-            # 注意：方向是"越小越好"的问题中惩罚为加大；这里五目标均为越大越好，
-            # 短板惩罚 = 将该目标压缩（劣化），越差的个体压缩越多
+        lo, hi = float(col.min()), float(col.max())
+        if hi - lo < 1e-12:
+            continue  # 退化目标（当代无区分度）
+        norm = (col - lo) / (hi - lo)
+        if float(np.median(norm)) < weak_quantile:
+            # 该目标整体偏低（多数个体在当代底部）→ 短板 → 越差的个体压缩越多
             rank = np.argsort(np.argsort(col)) / max(len(col) - 1, 1)
             out[:, j] = col * (1.0 - penalty_per_weak * 0.1 * (1.0 - rank))
     return out
